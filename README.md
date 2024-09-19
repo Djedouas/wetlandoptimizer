@@ -10,9 +10,13 @@
 
 ## Installation
 
-To install `wetlandoptimizer`, you first need to clone the repository:
+To install `wetlandoptimizer`, you first need to clone the repository or download the source code. Then you need to navigate to the root directory of the package.
 
+Next, you can install the package using the following command:
 
+```bash
+python -m pip install -e .
+```
 
 ## License
 
