@@ -1,5 +1,7 @@
 # wetlandoptimizer
 
+![](https://img.shields.io/badge/Licenses-MIT-green)
+
 -----
 
 `wetlandoptimizer` is a Python package for optimizing the design of multiple step treatment wetland systems.
