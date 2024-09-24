@@ -1,11 +1,8 @@
 import treatment
 import optimization
 import yaml
-
-def load_config(file_path):
-    with open(file_path, 'r') as file:
-        config = yaml.safe_load(file)
-    return config
+import sys
+import os
 
 def COD_Fractionation(polluants_in) :
     """
@@ -46,7 +43,7 @@ def COD_Fractionation(polluants_in) :
 
 ################################################################################
 
-def main(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
+def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
     """
     Optimizes the treatment chain and prints the results for the user.
 
@@ -71,8 +68,16 @@ def main(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
     Q : float
         Flow rate (m3/day).
     """
-    config_path = 'src/config.yaml'
-    config = load_config(config_path)
+    base_directory = r'C:\Users\zoe.legeai\Documents\Source\wetlandoptimizer\src\wetlandoptimizer'
+    sys.path.append(base_directory)
+
+    config_path = os.path.join(base_directory, 'config.yaml')
+    
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"No such file or directory: '{config_path}'")
+    
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file)
 
     Cin = COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
     Cobj = [TSS_out, BOD5_out, TKN_out, COD_out] # g/m3
@@ -134,7 +139,4 @@ def main(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
     print("Outlet TKN deviation:",round(-(Cobj[2] - output_function_values[2]),2),"mgTKN/L")
     print("Outlet COD deviation:",round(-(Cobj[3] - (output_function_values[3]+output_function_values[4]+output_function_values[5])),2),"mgO2/L")
 
-################################################################################
 
-if __name__ == '__main__':
-    main()

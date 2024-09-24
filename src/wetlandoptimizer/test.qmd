@@ -1,0 +1,684 @@
+# Analysis and Visualization of Treatment Parameters for CARIBSANcopy
+
+## 1. Setup and Imports
+
+### 1.1 Importing Libraries and Modules
+
+This section imports the necessary libraries for data analysis, visualization, and optimization. These libraries include NumPy and pandas for data manipulation, Matplotlib for plotting, and SciPy for fitting functions. Additionally, YAML is used for configuration file handling, and sys and os are used for system operations.
+
+```{python}
+"""
+Import necessary libraries for data analysis, visualization, and optimization.
+
+- numpy: Library for numerical operations.
+- pandas: Library for data manipulation and analysis.
+- matplotlib.pyplot: Module for creating static, animated, and interactive visualizations.
+- matplotlib.colors: Module for creating and manipulating color maps.
+- matplotlib.cm: Module for color mapping.
+- scipy.optimize.curve_fit: Function for fitting curves.
+- yaml: Library for parsing and creating YAML.
+- sys: Module providing access to some variables used or maintained by the interpreter.
+- os: Module providing a portable way of using operating system-dependent functionality.
+"""
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib import colors
+from matplotlib.cm import ScalarMappable
+from scipy.optimize import curve_fit
+import yaml
+import sys
+import os
+```
+
+This section sets up the Seaborn visualization library with a colorblind-friendly palette.
+
+```{python}
+"""
+Set up the Seaborn visualization library with a colorblind-friendly palette.
+
+- seaborn: Library for making statistical graphics in Python.
+- sns.set_palette: Function to set the default color cycle for all plots.
+
+"""
+import seaborn as sns
+sns.set_palette("colorblind")
+```
+
+## 2. Configuration and Parameters
+
+### 2.1 Configuration and Parameter Loading
+
+This section sets the base directory for the project and adds it to the system path. This allows for importing custom modules that are part of the CARIBSAN project. The treatment, optimization, and main modules are then imported for further use in the analysis and visualization processes.
+
+```{python}
+"""
+Set the base directory for the project and add it to the system path. 
+Import custom modules required for data treatment, optimization, and main functionality.
+
+- base_directory: Path to the project source directory.
+- sys.path.append: Method to add a specified directory to the system path.
+- import treatment: Import custom module for data treatment.
+- import optimization: Import custom module for optimization routines.
+- import main: Import the main module for core functionalities.
+"""
+base_directory = r'C:\Users\zoe.legeai\Documents\Source\wetlandoptimizer\src\wetlandoptimizer'
+sys.path.append(base_directory)
+
+import treatment
+import optimization
+import main
+```
+
+This section defines a function to load configuration settings from a YAML file. The load_config function reads the YAML file specified by the file path and returns the configuration as a dictionary.
+
+```{python}
+def load_config(file_path):
+    """
+    Load configuration settings from a YAML file.
+
+    Parameters
+    ----------
+    file_path : str
+        The path to the YAML configuration file.
+
+    Returns
+    -------
+    dict
+        The configuration settings loaded from the YAML file.
+    
+    Examples
+    --------
+    >>> config = load_config('config.yaml')
+    """
+    with open(file_path, 'r') as file:
+        config = yaml.safe_load(file)
+    return config
+```
+
+### 2.2 Initial Parameter Definitions
+
+This section initializes variables for water quality parameters, including TSS, BOD5, TKN, and COD. These values are essential for the CARIBSAN project's analysis and visualization tasks.
+
+Please indicate the mesured concentration of the four main pollutants of your test influent.
+
+```{python}
+# Initialize water quality parameters
+
+# TSS in mTSS/m3
+TSS_in = 288  # please complete with actual value
+
+# BOD5 in gO2/m3
+BOD5_in = 265  # please complete with actual value
+
+# TKN in gTKN/m3
+TKN_in = 123  # please complete with actual value
+
+# COD in gO2/m3
+COD_in = 646  # please complete with actual value
+```
+
+This section sets the flow rate of the water, given in cubic meters per day (m³/d).
+
+Please indicate the mesured flow rate of your influent.
+
+```{python}
+# Set the flow rate parameter
+
+# Flow rate in cubic meters per day (m³/d)
+Q = 226  # please complete with actual value
+```
+
+### 2.3 Objective Parameter Definitions
+
+This section sets the target values for various water quality parameters. These target values represent the desired outcomes for TSS, BOD5, TKN, COD.
+
+Please indicate the desired concentration of the four main pollutants for your test outlet.
+
+```{python}
+# Set target values for water quality parameters
+
+# TSS in gTSS/m3
+TSS_obj = 40  # please complete with actual value
+
+# BOD5 in gO2/m3
+BOD5_obj = 40  # please complete with actual value
+
+# TKN in gTKN/m3
+TKN_obj = 8  # please complete with actual value
+
+# COD in gO2/m3
+COD_obj = 40  # please complete with actual value
+```
+
+### 2.4 Fractionation and Summarization
+
+This section calculates the COD fractionation using the COD_Fractionation function from the main module. It also summarize the objective parameters values.
+
+```{python}
+"""
+Calculate the COD fractionation and set target values for COD parameters.
+
+- Cin : The output of the COD fractionation calculation, which represents the COD fractionation in grams per cubic meter (g/m³).
+- Cobj : List of target values for TSS, BOD5, TKN, and COD, given in grams per cubic meter (g/m³).
+"""
+Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
+Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj] # g/m3
+```
+
+## 3. Results
+
+This section calls the main.results function to compute and display the analysis results. It uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate. This function will provide the final results (treatment chain sizing, actual outlet concentration and load limit deviation) based on the specified targets.
+
+```{python}
+"""
+Run the main results function with the input and objective water quality parameters, along with the flow rate.
+
+- main.results: Function that generates the final results of the analysis based on input and target values.
+
+Parameters
+----------
+TSS_in : float
+    Total Suspended Solids concentration in the influent (g/m³).
+BOD5_in : float
+    Biological Oxygen Demand over 5 days in the influent (gO2/m³).
+TKN_in : float
+    Total Kjeldahl Nitrogen concentration in the influent (gTKN/m³).
+COD_in : float
+    Chemical Oxygen Demand concentration in the influent (gO2/m³).
+TSS_obj : float
+    Target Total Suspended Solids concentration in the effluent (g/m³).
+BOD5_obj : float
+    Target Biological Oxygen Demand over 5 days in the effluent (gO2/m³).
+TKN_obj : float
+    Target Total Kjeldahl Nitrogen concentration in the effluent (gTKN/m³).
+COD_obj : float
+    Target Chemical Oxygen Demand concentration in the effluent (gO2/m³).
+Q : float
+    Flow rate of the influent (m³/day).
+"""
+main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q)
+```
+
+## 4. Graphical visualization
+
+### 4.1 People Equivalent Calculation
+
+This section defines a function to calculate the People Equivalent (PE) based on the BOD5 inlet concentration and flow rate. 1 PE correspond to 60gO2/day.
+
+```{python}
+def Calculation_PE_DBO5(Cin, Q):
+    """
+    Calculate the People Equivalent (PE) based on the BOD5 inlet concentration and flow rate.
+
+    Parameters
+    ----------
+    Cin : list of float
+        Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³). 
+    Q : float
+        The flow rate in cubic meters per day (m³/d).
+
+    Returns
+    -------
+    float
+        The calculated daily BOD5 in liters per day.
+
+    Examples
+    --------
+    >>> nb_PE = Calculation_PE_DBO5([0, 265, 0, 0], 226)
+    """
+    return (Cin[1] * Q) / 60
+```
+
+### 4.2 Visualization of Surface Areas
+
+This section defines the Plot_SurfaceArea_AsAFunctionOf_TKN function, which performs a series of operations to analyze and visualize treatment targets and their impacts. The function:
+
+Loads configuration settings from a YAML file. Defines a range of target values for the treatment. Computes various metrics related to the treatment process using custom functions. Plots these metrics to visualize the relationship between treatment targets and system performance. The function generates a plot showing total surface areas for two stages of treatment and total volume as a function of the treatment target.
+
+```{python}
+def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
+    """
+    Perform calculations and generate plots for treatment targets and their impacts.
+
+    Parameters
+    ----------
+    a : float
+        The starting value for the treatment target range.
+    b : float
+        The ending value for the treatment target range.
+    N : int
+        The number of intervals within the treatment target range.
+    Cin : list of float
+        Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+    Cobj : list of float
+        Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+    Q : float
+        The flow rate in cubic meters per day (m³/d).
+
+    Raises
+    ------
+    FileNotFoundError
+        If the configuration file does not exist.
+
+    Returns
+    -------
+    None
+        The function generates and displays plots for the treatment targets and impacts.
+
+    Notes
+    -----
+    - The function reads configuration settings from 'config.yaml'.
+    - It computes the total volume and surface areas for the first and second stages of treatment.
+    - It plots these metrics against the treatment targets.
+
+    Examples
+    --------
+    >>> Plot_SurfaceArea_AsAFunctionOf_TKN(5, 20, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226)
+    """
+    config_path = os.path.join(base_directory, 'config.yaml')
+    
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"No such file or directory: '{config_path}'")
+    
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    vdns1 = treatment.VdNS1(**config['VdNS1'])
+    vdns2 = treatment.VdNS2(**config['VdNS2'])
+    pathway_french_TW = [vdns1, vdns2]
+
+    lx = [a + i * (b - a) / N for i in range(N + 1)]
+
+    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total volume for a given treatment target.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total volume in cubic meters.
+        """
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        term1 = (Q / best_solution_cma[0]) * best_solution_cma[1] * vdns1.Nb_parallel
+        term2 = (Q / best_solution_cma[2]) * best_solution_cma[3] * vdns2.Nb_parallel
+        return term1 + term2
+
+    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total surface area for the first stage of treatment.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total surface area for the first stage of treatment in square meters per person equivalent (m²/PE).
+        """
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        return (Q/best_solution_cma[0])/(Calculation_PE_DBO5(Cin,Q)) * vdns1.Nb_parallel
+
+    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total surface area for the second stage of treatment.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total surface area for the second stage of treatment in square meters per person equivalent (m²/PE).
+        """        
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        return (Q/best_solution_cma[2])/(Calculation_PE_DBO5(Cin, Q)) * vdns2.Nb_parallel
+    
+    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+
+    data_surfacearea = {'Treatment target (mgNTK/L)': lx, 'Total volume (m3)': ly1,'Total surface area 1st floor (m2/PE)': ly2, 'Total surface area 2nd floor (m2/PE)': ly3}
+    print("data done")
+
+    plt.clf()
+    plt.cla()
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 10))
+
+    sns.lineplot(data=data_surfacearea, x='Treatment target (mgNTK/L)', y='Total surface area 1st floor (m2/PE)', ax=ax1, color='orange')
+    sns.lineplot(data=data_surfacearea, x='Treatment target (mgNTK/L)', y='Total surface area 2nd floor (m2/PE)', ax=ax1, color='green')
+
+    ax1.set_ylabel('Total surface area (m$^2$/PE)', fontsize=16)
+    ax1.set_title('Total surface areas and volume as a function of TKN treatment target', fontsize=16)
+
+    ax1.axhline(0.4 * vdns1.Nb_parallel, color='orange', linestyle='--')
+    ax1.axhline(0.4 * vdns2.Nb_parallel, color='green', linestyle='--')
+
+    sns.lineplot(data=data_surfacearea, x='Treatment target (mgNTK/L)', y='Total volume (m3)', ax=ax2, color='blue')
+
+    ax2.set_xlabel('Treatment target (mgNTK/L)', fontsize=16)
+    ax2.set_ylabel('Total volume (m$^3$)', fontsize=16)
+
+    fig.tight_layout()
+
+    custom_legend = [
+        plt.Line2D([], [], color='orange', label='Total surface area 1$^{st}$ stage (m$^2$/PE)'),
+        plt.Line2D([], [], color='orange', linestyle='--', label='French usual sizing for total 1$^{st}$ stage (m$^2$/PE)'),
+        plt.Line2D([], [], color='green', label='Total surface area 2$^{nd}$ stage (m$^2$/PE)'),
+        plt.Line2D([], [], color='green', linestyle='--', label='French usual sizing for total 2$^{nd}$ stage (m$^2$/PE)'),
+        plt.Line2D([], [], label='Total volume (m$^3$)')
+    ]
+
+    leg = fig.legend(handles=custom_legend, loc='upper center', bbox_to_anchor=(0.5, -0.01), ncol=3, fontsize=16)
+
+    plt.show()
+```
+
+This section defines constants used for visualizing the relationship between TKN targets and surface area. The constants set the range and number of values for plotting surface area against TKN treatment targets.
+
+```{python}
+# Constants for visualizing TKN along with surface area
+
+# Lower bound for the surface area range in the visualization
+a_surfacearea = 5
+
+# Upper bound for the surface area range in the visualization
+b_surfacearea = 20
+
+# Number of values to be plotted within the surface area range
+N_surfacearea = 100
+```
+
+This section calls the Plot_SurfaceArea_AsAFunctionOf_TKN function with the defined constants and parameters. This function will generate and display plots illustrating the relationship between TKN targets and the required surface areas and volumes for treatment.
+
+```{python}
+"""
+Call the function to generate plots for the treatment targets and their impacts.
+
+- Plot_SurfaceArea_AsAFunctionOf_TKN: Function to perform calculations and generate visualizations.
+- Parameters:
+  - a_surfacearea : Lower bound for the surface area range in the visualization.
+  - b_surfacearea : Upper bound for the surface area range in the visualization.
+  - N_surfacearea : Number of values to be plotted within the surface area range.
+  - Cin : Inlet concentration values for TSS, BOD5, TKN, and COD.
+  - Cobj : Target concentration values for TSS, BOD5, TKN, and COD.
+  - Q : Flow rate in cubic meters per day (m³/d).
+"""
+Plot_SurfaceArea_AsAFunctionOf_TKN(a_surfacearea, b_surfacearea, N_surfacearea, Cin, Cobj, Q)
+```
+
+### 4.3 Visualization of Depths
+
+This section defines the Plot_Depth_AsAFunctionOf_COD function, which performs calculations and visualizations related to treatment depth targets. The function:
+
+Loads configuration settings from a YAML file. Defines a range of target values for the treatment. Computes various metrics related to the treatment depth and volume using custom functions. Plots these metrics to visualize the relationship between treatment targets and system performance. The function generates a plot showing the total depths for two stages of treatment and total volume as a function of COD treatment targets.
+
+```{python}
+def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
+    """
+    Perform calculations and generate plots for treatment depth targets and their impacts.
+
+    Parameters
+    ----------
+    a : float
+        The starting value for the treatment target range.
+    b : float
+        The ending value for the treatment target range.
+    N : int
+        The number of intervals within the treatment target range.
+    Cin : list of float
+        Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+    Cobj : list of float
+        Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+    Q : float
+        The flow rate in cubic meters per day (m³/d).
+
+    Raises
+    ------
+    FileNotFoundError
+        If the configuration file does not exist.
+
+    Returns
+    -------
+    None
+        The function generates and displays plots for the treatment depth targets and impacts.
+
+    Notes
+    -----
+    - The function reads configuration settings from 'config.yaml'.
+    - It computes the total volume and depths for the first and second stages of treatment.
+    - It plots these metrics against the treatment targets.
+
+    Examples
+    --------
+    >>> Plot_Depth_AsAFunctionOf_COD(20, 80, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226)
+    """  
+    config_path = os.path.join(base_directory, 'config.yaml')
+    
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"No such file or directory: '{config_path}'")
+    
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file) 
+    
+    vdns1 = treatment.VdNS1(**config['VdNS1'])
+    vdns2 = treatment.VdNS2(**config['VdNS2'])
+    pathway_french_TW = [vdns1, vdns2]
+
+    lx = [a + i * (b - a) / N for i in range(N + 1)]
+
+    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total volume for a given treatment target.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total volume in cubic meters.
+        """        
+        Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        term1 = (Q / best_solution_cma[0]) * best_solution_cma[1] * vdns1.Nb_parallel
+        term2 = (Q / best_solution_cma[2]) * best_solution_cma[3] * vdns2.Nb_parallel
+        return term1 + term2
+
+    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total depth for the first stage of treatment.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total depth for the first stage of treatment in meters.
+        """
+        Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        return best_solution_cma[1] * vdns1.Nb_parallel
+
+    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q):
+        """
+        Compute the total depth for the second stage of treatment.
+
+        Parameters
+        ----------
+        x : float
+            The treatment target value.
+        pathway_french_TW : list
+            List of treatment pathway objects.
+        Cin : list of float
+            Inlet concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Cobj : list of float
+            Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
+        Q : float
+            The flow rate in cubic meters per day (m³/d).
+
+        Returns
+        -------
+        float
+            The total depth for the second stage of treatment in meters.
+        """        
+        Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
+
+        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimiseur = optimization.CMAES(treatment_chain_french_TW)
+        best_solution_cma = optimiseur.optimize()
+
+        return best_solution_cma[3] * vdns2.Nb_parallel
+      
+    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+
+    data_depth = {'Treatment target (mgO2/L)': lx, 'Total volume (m3)': ly1,'Total depth 1st floor (m)': ly2, 'Total depth 2nd floor (m)': ly3}
+    print("data done")
+
+    plt.clf()
+    plt.cla()
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True, figsize=(10, 10))
+
+    sns.lineplot(data=data_depth, x='Treatment target (mgO2/L)', y='Total depth 1st floor (m)', ax=ax1, color='orange')
+    sns.lineplot(data=data_depth, x='Treatment target (mgO2/L)', y='Total depth 2nd floor (m)', ax=ax1, color='green')
+
+    ax1.set_ylabel('Total depth (m)', fontsize=16)
+    ax1.set_title('Total depths and volume as a function of COD treatment target', fontsize=16)
+
+    ax1.axhline(0.4 * vdns1.Nb_parallel, color='orange', linestyle='--')
+    ax1.axhline(0.4 * vdns2.Nb_parallel, color='green', linestyle='--')
+
+    sns.lineplot(data=data_depth, x='Treatment target (mgO2/L)', y='Total volume (m3)', ax=ax2, color='blue')
+
+    ax2.set_xlabel('Treatment target (mgO$_2$/L)', fontsize=16)
+    ax2.set_ylabel('Total volume (m$^3$)', fontsize=16)
+
+    fig.tight_layout()
+
+    custom_legend = [
+        plt.Line2D([], [], color='orange', label='Total depth 1$^{st}$ stage (m)'),
+        plt.Line2D([], [], color='orange', linestyle='--', label='French usual sizing for total 1$^{st}$ stage (m)'),
+        plt.Line2D([], [], color='green', label='Total depth 2$^{nd}$ stage (m)'),
+        plt.Line2D([], [], color='green', linestyle='--', label='French usual sizing for total 2$^{nd}$ stage (m)'),
+        plt.Line2D([], [], label='Total volume (m$^3$)')
+    ]
+
+    leg = fig.legend(handles=custom_legend, loc='upper center', bbox_to_anchor=(0.5, -0.01), ncol=3, fontsize=16)
+
+    plt.show()
+```
+
+This section defines constants used for visualizing the relationship between COD targets and depth measurements. The constants set the range and number of values for plotting depth against COD treatment targets.
+
+```{python}
+# Constants for visualizing COD along with depth
+
+# Lower bound for the depth range in the visualization
+a_depth = 20
+
+# Upper bound for the depth range in the visualization
+b_depth = 80
+
+# Number of values to be plotted within the depth range
+N_depth = 100
+```
+
+This section calls the Plot_Depth_AsAFunctionOf_COD function with the specified constants and parameters. The function will compute and visualize the relationship between COD treatment targets and the required depths and volumes for treatment.
+
+```{python}
+"""
+Call the function to generate plots for the treatment targets and their impacts.
+
+- Plot_Depth_AsAFunctionOf_COD: Function to perform calculations and generate visualizations.
+- Parameters:
+  - a_depth : Lower bound for the depth range in the visualization.
+  - b_depth : Upper bound for the depth range in the visualization.
+  - N_depth : Number of values to be plotted within the depth range.
+  - Cin : Inlet concentration values for TSS, BOD5, TKN, and COD.
+  - Cobj : Target concentration values for TSS, BOD5, TKN, and COD.
+  - Q : Flow rate in cubic meters per day (m³/d).
+"""
+Plot_Depth_AsAFunctionOf_COD(a_depth, b_depth, N_depth, Cin, Cobj, Q)
+```
+
