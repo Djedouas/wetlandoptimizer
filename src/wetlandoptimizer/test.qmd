@@ -145,7 +145,7 @@ TSS_obj = 20  # please complete with actual value
 BOD5_obj = 20  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_obj = 5  # please complete with actual value
+TKN_obj = 8  # please complete with actual value
 
 # COD in gO2/m3
 COD_obj = 80  # please complete with actual value
