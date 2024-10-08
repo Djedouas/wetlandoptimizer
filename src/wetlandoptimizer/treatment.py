@@ -521,7 +521,7 @@ class VdNS1(Process):
         optimal_load_COD_1 = self.Optimal_COD_Load(Cobj[2])
         load_COD_1 = (Cin[3] + Cin[4] + Cin[5]) * V_values[0]
         clogg_COD_1 = ((optimal_load_COD_1 - load_COD_1) ** 2) / (optimal_load_COD_1 ** 2)
-        return clogg_COD_1 * 362.12
+        return clogg_COD_1 * 200
              
 ################################################################################
 

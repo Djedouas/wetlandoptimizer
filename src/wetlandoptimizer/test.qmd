@@ -112,7 +112,7 @@ TSS_in = 288  # please complete with actual value
 BOD5_in = 265  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_in = 123  # please complete with actual value
+TKN_in = 67  # please complete with actual value
 
 # COD in gO2/m3
 COD_in = 646  # please complete with actual value
@@ -139,16 +139,16 @@ Please indicate the desired concentration of the four main pollutants for your t
 # Set target values for water quality parameters
 
 # TSS in gTSS/m3
-TSS_obj = 40  # please complete with actual value
+TSS_obj = 20  # please complete with actual value
 
 # BOD5 in gO2/m3
-BOD5_obj = 40  # please complete with actual value
+BOD5_obj = 20  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_obj = 8  # please complete with actual value
+TKN_obj = 5  # please complete with actual value
 
 # COD in gO2/m3
-COD_obj = 40  # please complete with actual value
+COD_obj = 80  # please complete with actual value
 ```
 
 ### 2.4 Fractionation and Summarization
