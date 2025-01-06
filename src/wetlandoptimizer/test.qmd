@@ -126,7 +126,7 @@ Please indicate the mesured flow rate of your influent.
 # Set the flow rate parameter
 
 # Flow rate in cubic meters per day (m³/d)
-Q = 226  # please complete with actual value
+Q = 1700  # please complete with actual value
 ```
 
 ### 2.3 Objective Parameter Definitions
@@ -139,16 +139,16 @@ Please indicate the desired concentration of the four main pollutants for your t
 # Set target values for water quality parameters
 
 # TSS in gTSS/m3
-TSS_obj = 20  # please complete with actual value
+TSS_obj = 100  # please complete with actual value
 
 # BOD5 in gO2/m3
-BOD5_obj = 20  # please complete with actual value
+BOD5_obj = 100  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_obj = 8  # please complete with actual value
+TKN_obj = 100  # please complete with actual value
 
 # COD in gO2/m3
-COD_obj = 80  # please complete with actual value
+COD_obj = 100  # please complete with actual value
 ```
 
 ### 2.4 Fractionation and Summarization
@@ -517,6 +517,10 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
     lx = [a + i * (b - a) / N for i in range(N + 1)]
 
     def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q):
+        print(Cin)
+        print(Cobj)
+        print(pathway_french_TW)
+        print(Q)
         """
         Compute the total volume for a given treatment target.
 
@@ -539,6 +543,7 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
             The total volume in cubic meters.
         """        
         Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
+        print(Cobj_x)
 
         treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
         optimiseur = optimization.CMAES(treatment_chain_french_TW)
@@ -571,12 +576,13 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
             The total depth for the first stage of treatment in meters.
         """
         Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
+        print(Cobj_x)
 
         treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
         optimiseur = optimization.CMAES(treatment_chain_french_TW)
         best_solution_cma = optimiseur.optimize()
 
-        return best_solution_cma[1] * vdns1.Nb_parallel
+        return best_solution_cma[1]
 
     def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q):
         """
@@ -606,7 +612,7 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         optimiseur = optimization.CMAES(treatment_chain_french_TW)
         best_solution_cma = optimiseur.optimize()
 
-        return best_solution_cma[3] * vdns2.Nb_parallel
+        return best_solution_cma[3]
       
     ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
     ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
@@ -626,8 +632,7 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
     ax1.set_ylabel('Total depth (m)', fontsize=16)
     ax1.set_title('Total depths and volume as a function of COD treatment target', fontsize=16)
 
-    ax1.axhline(0.4 * vdns1.Nb_parallel, color='orange', linestyle='--')
-    ax1.axhline(0.4 * vdns2.Nb_parallel, color='green', linestyle='--')
+    ax1.axhline(0.3, color='pink', linestyle='--')
 
     sns.lineplot(data=data_depth, x='Treatment target (mgO2/L)', y='Total volume (m3)', ax=ax2, color='blue')
 

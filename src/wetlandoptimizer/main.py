@@ -80,8 +80,10 @@ def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
         config = yaml.safe_load(file)
 
     Cin = COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
+    # print(Cin)
     Cobj = [TSS_out, BOD5_out, TKN_out, COD_out] # g/m3
-  
+    # print(Cobj)
+
     vdns1 = treatment.VdNS1(**config['VdNS1'])
     vdns2 = treatment.VdNS2(**config['VdNS2'])
     pathway_french_TW = [vdns1, vdns2]
@@ -131,6 +133,9 @@ def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
         print("TKN loading contraint stage", index+1, ":", round(constraint_TKN_pc,2), "%")
         constraint_COD_pc = 100 * (output[3]+output[4]+output[5]) * V_values[0] / process.Lim_COD
         print("COD loading contraint stage", index+1, ":", round(constraint_COD_pc,2), "%")
+        print("")
+        constraint_hydraulic_pc = 100 * (V_values[0] - process.Xmin) / (process.Xmax - process.Xmin)
+        print("Hydraulic loading constraint stage", index+1, ":", round(constraint_hydraulic_pc,2), "%")        
         print("---")
         output = process.Reduction_Function(V_values, output)
 
