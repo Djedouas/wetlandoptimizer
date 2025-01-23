@@ -43,7 +43,7 @@ def COD_Fractionation(polluants_in) :
 
 ################################################################################
 
-def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
+def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q,climate) :
     """
     Optimizes the treatment chain and prints the results for the user.
 
@@ -83,6 +83,9 @@ def results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_out,BOD5_out,TKN_out,COD_out,Q) :
     # print(Cin)
     Cobj = [TSS_out, BOD5_out, TKN_out, COD_out] # g/m3
     # print(Cobj)
+
+    if climate == "Tropical":
+        config['VdNS1']['Nb_parallel'] = 2
 
     vdns1 = treatment.VdNS1(**config['VdNS1'])
     vdns2 = treatment.VdNS2(**config['VdNS2'])

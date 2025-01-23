@@ -126,7 +126,7 @@ Please indicate the mesured flow rate of your influent.
 # Set the flow rate parameter
 
 # Flow rate in cubic meters per day (m³/d)
-Q = 1700  # please complete with actual value
+Q = 226  # please complete with actual value
 ```
 
 ### 2.3 Objective Parameter Definitions
@@ -166,6 +166,19 @@ Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
 Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj] # g/m3
 ```
 
+### 2.5 Climate Definition
+
+This section sets out the type of climate prevailing in the study area. This information will impact the sizing of the proposed solution.
+
+Please indicate the climate, by typing "Tropical" or "Temperate".
+
+```{python}
+# Set climate
+
+# Temperate or Tropical
+climate = "Tropical"  # please complete with actual value 
+```
+
 ## 3. Results
 
 This section calls the main.results function to compute and display the analysis results. It uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate. This function will provide the final results (treatment chain sizing, actual outlet concentration and load limit deviation) based on the specified targets.
@@ -197,7 +210,7 @@ COD_obj : float
 Q : float
     Flow rate of the influent (m³/day).
 """
-main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q)
+main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q,climate)
 ```
 
 ## 4. Graphical visualization
