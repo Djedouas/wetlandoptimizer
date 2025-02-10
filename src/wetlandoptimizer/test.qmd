@@ -108,14 +108,20 @@ Please indicate the mesured concentration of the four main pollutants of your te
 # TSS in mTSS/m3
 TSS_in = 288  # please complete with actual value
 
-# BOD5 in gO2/m3
+# BOD5 in gBOD5/m3
 BOD5_in = 265  # please complete with actual value
 
 # TKN in gTKN/m3
 TKN_in = 67  # please complete with actual value
 
-# COD in gO2/m3
+# COD in gCOD/m3
 COD_in = 646  # please complete with actual value
+
+# NO3 in gNO3/m3
+NO3_in = 3  # please complete with actual value
+
+# Summarization and fractionation
+Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in, NO3_in]) # g/m3
 ```
 
 This section sets the flow rate of the water, given in cubic meters per day (m³/d).
@@ -141,32 +147,26 @@ Please indicate the desired concentration of the four main pollutants for your t
 # TSS in gTSS/m3
 TSS_obj = 100  # please complete with actual value
 
-# BOD5 in gO2/m3
+# BOD5 in gBOD5/m3
 BOD5_obj = 100  # please complete with actual value
 
 # TKN in gTKN/m3
 TKN_obj = 100  # please complete with actual value
 
-# COD in gO2/m3
-COD_obj = 100  # please complete with actual value
+# COD in gCOD/m3
+COD_obj = 30  # please complete with actual value
+
+# NO3 in gNO3/m3
+NO3_obj = 20 # please complete with actual value
+
+# TN in gTN/m3
+TN_obj = 20 # please complete with actual value
+
+# Summarization
+Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj, NO3_obj, TN_obj] # g/m3
 ```
 
-### 2.4 Fractionation and Summarization
-
-This section calculates the COD fractionation using the COD_Fractionation function from the main module. It also summarize the objective parameters values.
-
-```{python}
-"""
-Calculate the COD fractionation and set target values for COD parameters.
-
-- Cin : The output of the COD fractionation calculation, which represents the COD fractionation in grams per cubic meter (g/m³).
-- Cobj : List of target values for TSS, BOD5, TKN, and COD, given in grams per cubic meter (g/m³).
-"""
-Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
-Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj] # g/m3
-```
-
-### 2.5 Climate Definition
+### 2.4 Climate Definition
 
 This section sets out the type of climate prevailing in the study area. This information will impact the sizing of the proposed solution.
 
@@ -179,7 +179,25 @@ Please indicate the climate, by typing "Tropical" or "Temperate".
 climate = "Tropical"  # please complete with actual value 
 ```
 
+### 2.5 Maximal Number of Stages and Files Definition
+
+Set the maximum number of treatment stages and the maximum number of files to be processed.
+
+Please indicate the maximal number of stages and files
+
+```{python}
+# Set maximal number of stages and files
+
+# Stage max
+stages_max = 3
+
+# Files max
+files_max = 1
+```
+
 ## 3. Results
+
+### 3.1 French Vertical Flow Treatment Wetland
 
 This section calls the main.results function to compute and display the analysis results. It uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate. This function will provide the final results (treatment chain sizing, actual outlet concentration and load limit deviation) based on the specified targets.
 
@@ -191,26 +209,20 @@ Run the main results function with the input and objective water quality paramet
 
 Parameters
 ----------
-TSS_in : float
-    Total Suspended Solids concentration in the influent (g/m³).
-BOD5_in : float
-    Biological Oxygen Demand over 5 days in the influent (gO2/m³).
-TKN_in : float
-    Total Kjeldahl Nitrogen concentration in the influent (gTKN/m³).
-COD_in : float
-    Chemical Oxygen Demand concentration in the influent (gO2/m³).
-TSS_obj : float
-    Target Total Suspended Solids concentration in the effluent (g/m³).
-BOD5_obj : float
-    Target Biological Oxygen Demand over 5 days in the effluent (gO2/m³).
-TKN_obj : float
-    Target Total Kjeldahl Nitrogen concentration in the effluent (gTKN/m³).
-COD_obj : float
-    Target Chemical Oxygen Demand concentration in the effluent (gO2/m³).
+Cin : list
+    Input concentrations ([TSS]in1 : Cin[0] (gTSS/m3), [BOD5]in1 : Cin[1] (gO2/m3), [TKN]in1 : Cin[2] (gTKN/m3), [CODdb]in1 : Cin[3] (gO2/m2), [CODdi]in1 : Cin[4] (gO2/m3), [CODp]in1 : Cin[5] (gO2/m3), [NO3]in1 : Cin[6] (gNO3/m3)).
+Cobj : list
+    Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2), [NO3]obj : Cobj[4] (gNO3/m2)).
 Q : float
     Flow rate of the influent (m³/day).
 """
-main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q,climate) 
+main.results(Cin, Cobj, Q, "Tropical") 
+```
+
+### 3.2 Global Treatment Train Generation
+
+```{python}
+main.main_multi_stage_TW_sorted_volume_automatic_generation(Cin,Cobj,Q,stages_max,files_max,climate)
 ```
 
 ## 4. Graphical visualization
