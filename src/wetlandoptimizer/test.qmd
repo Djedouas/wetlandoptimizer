@@ -210,7 +210,7 @@ COD_obj : float
 Q : float
     Flow rate of the influent (m³/day).
 """
-main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q,climate)
+main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q,climate) 
 ```
 
 ## 4. Graphical visualization
