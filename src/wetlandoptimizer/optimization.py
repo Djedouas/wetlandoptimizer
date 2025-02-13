@@ -1,5 +1,6 @@
 import numpy as np # type: ignore
 import cma  # type: ignore
+import treatment
 
 class CMAES:
     """
@@ -126,6 +127,7 @@ class Optimiseur5:
     def Opti_meilleur_pathway(self):
         pathway = treatment.Pathway(self.stages_max, self.files_max)
         pathways_possibles = pathway.Possible_Combinations()
+        print(pathways_possibles)
 
         best_results = []
         rejected_results = []

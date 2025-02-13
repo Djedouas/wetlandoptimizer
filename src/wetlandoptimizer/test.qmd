@@ -154,10 +154,10 @@ BOD5_obj = 100  # please complete with actual value
 TKN_obj = 100  # please complete with actual value
 
 # COD in gCOD/m3
-COD_obj = 30  # please complete with actual value
+COD_obj = 80  # please complete with actual value
 
 # NO3 in gNO3/m3
-NO3_obj = 20 # please complete with actual value
+NO3_obj = 10 # please complete with actual value
 
 # TN in gTN/m3
 TN_obj = 20 # please complete with actual value
@@ -215,6 +215,7 @@ Cobj : list
     Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2), [NO3]obj : Cobj[4] (gNO3/m2)).
 Q : float
     Flow rate of the influent (m³/day).
+climate : 
 """
 main.results(Cin, Cobj, Q, "Tropical") 
 ```
@@ -222,7 +223,7 @@ main.results(Cin, Cobj, Q, "Tropical")
 ### 3.2 Global Treatment Train Generation
 
 ```{python}
-main.main_multi_stage_TW_sorted_volume_automatic_generation(Cin,Cobj,Q,stages_max,files_max,climate)
+main.main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max)
 ```
 
 ## 4. Graphical visualization

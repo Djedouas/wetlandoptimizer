@@ -1293,12 +1293,12 @@ class Pathway:
         return subclasses
 
     def Possible_Combinations(self):
-        """Génère toutes les combinaisons valides de processus."""
+        """Génère toutes les combinaisons valides de processus ayant exactement stages_max étapes."""
         combinations = set()
-        for i in range(1, self.stages_max + 1):
-            raw_combinations = itertools.product(self.processes, repeat=i)
-            for combination in raw_combinations:
-                # Valider la combinaison en appelant Validate_Position pour chaque procédé
-                if all(process.Validate_Position(combination) for process in combination):
-                    combinations.add(combination)
+        raw_combinations = itertools.product(self.processes, repeat=self.stages_max)
+        for combination in raw_combinations:
+            # Valider la combinaison en appelant Validate_Position pour chaque procédé
+            if all(process.Validate_Position(combination) for process in combination):
+                combinations.add(combination)
         return combinations
+
