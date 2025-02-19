@@ -176,7 +176,7 @@ Please indicate the climate, by typing "Tropical" or "Temperate".
 # Set climate
 
 # Temperate or Tropical
-climate = "Tropical"  # please complete with actual value 
+climate = "Temperate"  # please complete with actual value 
 ```
 
 ### 2.5 Maximal Number of Stages and Files Definition
@@ -223,7 +223,7 @@ main.results(Cin, Cobj, Q, "Tropical")
 ### 3.2 Global Treatment Train Generation
 
 ```{python}
-main.main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max)
+main.main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max, climate)
 ```
 
 ## 4. Graphical visualization

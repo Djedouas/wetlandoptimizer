@@ -144,7 +144,7 @@ def get_ordinal_suffix(number):
     
 ################################################################################
 
-def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max):
+def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max, climate):
     base_directory = r'C:\Users\zoe.legeai\Documents\Source\caribsan-model\CARIBSANcopy\src\CARIBSANcopy'
     sys.path.append(base_directory)
 
@@ -155,6 +155,10 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
     
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
+
+    if climate == "Tropical":
+        config['VdNS1']['Nb_parallel'] = 2
+        config['VdNSS']['Nb_parallel'] = 2
 
     # Mapping des noms aux classes
     process_mapping = {}
