@@ -121,11 +121,13 @@ def results(Cin, Cobj, Q, climate) :
 
     print("Outlet TSS deviation:",round(-(Cobj[0] - output_function_values[0]),2),"mgTSS/L")
     print("Outlet BOD5 deviation:",round(-(Cobj[1] - output_function_values[1]),2),"mgO2/L")
-    print("Outlet TKN deviation:",round(-(Cobj[2] - output_function_values[2]),2),"mgTKN/L")
+    if Cobj[2] != None:        
+        print("Outlet TKN deviation:",round(-(Cobj[2] - output_function_values[2]),2),"mgTKN/L")
     print("Outlet COD deviation:",round(-(Cobj[3] - (output_function_values[3]+output_function_values[4]+output_function_values[5])),2),"mgO2/L")
     if Cobj[4] != None :
         print("Outlet NO3 deviation:",round(-(Cobj[4] - output_function_values[6]),2),"mgNO3/L")
-    print("Outlet TN deviation:",round(-(Cobj[5] - (output_function_values[2]+output_function_values[6])),2),"mgO2/L")
+    if Cobj[5] != None:    
+        print("Outlet TN deviation:",round(-(Cobj[5] - (output_function_values[2]+output_function_values[6])),2),"mgO2/L")
       
 ################################################################################
 
@@ -286,8 +288,10 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
 
         print("Outlet TSS deviation:", round(-(Cobj[0] - output_function_values[0]), 2), "mgTSS/L")
         print("Outlet BOD5 deviation:", round(-(Cobj[1] - output_function_values[1]), 2), "mgO2/L")
-        print("Outlet TKN deviation:", round(-(Cobj[2] - output_function_values[2]), 2), "mgTKN/L")
+        if Cobj[2] != None:        
+            print("Outlet TKN deviation:", round(-(Cobj[2] - output_function_values[2]), 2), "mgTKN/L")
         print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
         if Cobj[4] != None:
             print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
-        print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
+        if Cobj[5] != None:
+            print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")

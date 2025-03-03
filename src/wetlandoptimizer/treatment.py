@@ -530,11 +530,14 @@ class VdNS1(Process):
         float
             Optimal CODt load.
         """
-        y = (175/6) * x
-        if y >= 350:
+        if x == None :
             return 350
-        else:
-            return y
+        else :
+            y = (175/6) * x
+            if y >= 350:
+                return 350
+            else:
+                return y
           
     def Supplementary_Objective_Function(self, V_values, Cin, Cobj):
         """
@@ -1095,12 +1098,15 @@ class Treatment_Chain:
         constraint : list
             TKN output constraint value.
         """
-        output = self.Cin
-        for index, process in enumerate(self.pathway):
-            V_values = V[index * 3: (index + 1) * 3]
-            output = process.Reduction_Function(V_values, output, Q)
-        constraint = Cobj[2] - output[2]
-        return [constraint]
+        if Cobj[2] == None :
+            return [0]
+        else :
+            output = self.Cin
+            for index, process in enumerate(self.pathway):
+                V_values = V[index * 3: (index + 1) * 3]
+                output = process.Reduction_Function(V_values, output, Q)
+            constraint = Cobj[2] - output[2]
+            return [constraint]
       
     def Create_Constraints_CODout(self, V, Cobj, Q) :
         """
@@ -1139,12 +1145,15 @@ class Treatment_Chain:
 
     def Create_Constraints_TNout(self, V, Cobj, Q) :
     #######################################################################
-        output = self.Cin
-        for index, process in enumerate(self.pathway):
-            V_values = V[index * 3: (index + 1) * 3]
-            output = process.Reduction_Function(V_values, output, Q)
-        constraint = Cobj[5] - (output[2]+output[6])
-        return [constraint]    
+        if Cobj[5] == None :
+            return [0]
+        else :    
+            output = self.Cin
+            for index, process in enumerate(self.pathway):
+                V_values = V[index * 3: (index + 1) * 3]
+                output = process.Reduction_Function(V_values, output, Q)
+            constraint = Cobj[5] - (output[2]+output[6])
+            return [constraint]    
     
     def Total_Volume_Function(self, V, Q) :
         """
@@ -1203,6 +1212,7 @@ class Treatment_Chain:
         for index, process in enumerate(self.pathway):
             V_values = V[index * 3: (index + 1) * 3]
             vol = process.Volume_Function(V_values,Q) * process.Mat_cost + process.Volume_Function_Sat(V_values,Q) * 0.66
+            #demander pq 0.66 !!
             objective.append(vol)
             supp = process.Supplementary_Objective_Function(V_values, output, Cobj)
             objective.append(supp)

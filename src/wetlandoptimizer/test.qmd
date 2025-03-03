@@ -151,7 +151,7 @@ TSS_obj = 100  # please complete with actual value
 BOD5_obj = 100  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_obj = 100  # please complete with actual value
+TKN_obj = 5  # please complete with actual value
 
 # COD in gCOD/m3
 COD_obj = 80  # please complete with actual value
@@ -217,7 +217,7 @@ Q : float
     Flow rate of the influent (m³/day).
 climate : 
 """
-main.results(Cin, Cobj, Q, "Tropical") 
+main.results(Cin, Cobj, Q, climate) 
 ```
 
 ### 3.2 Global Treatment Train Generation
