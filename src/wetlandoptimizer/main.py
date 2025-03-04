@@ -34,18 +34,20 @@ def COD_Fractionation(pollutants_in):
 
 ################################################################################
 
-def results(Cin, Cobj, Q, climate) :
+def Results_French_VF(Cin, Cobj, Q, climate) :
     """
-    Optimizes the treatment chain and prints the results for the user.
+    Optimizes the French vertical flow wetland and prints the results for the user.
 
     Parameters
     ----------
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (gTSS/m3), [BOD5]in1 : Cin[1] (gO2/m3), [TKN]in1 : Cin[2] (gTKN/m3), [CODdb]in1 : Cin[3] (gO2/m2), [CODdi]in1 : Cin[4] (gO2/m3), [CODp]in1 : Cin[5] (gO2/m3), [NO3]in1 : Cin[6] (gNO3/m3)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2), [NO3]obj : Cobj[4] (gNO3/m2)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
     Q : float
         Flow rate (m3/day).
+    climate : str
+        Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
     """
     base_directory = r'C:\Users\zoe.legeai\Documents\Source\wetlandoptimizer\src\wetlandoptimizer'
     sys.path.append(base_directory)
@@ -68,12 +70,12 @@ def results(Cin, Cobj, Q, climate) :
     print("Optimizing with CMA-ES...")
     print("")
 
-    treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj, Q)
-    optimiseur = optimization.CMAES(treatment_chain_french_TW)
-    best_solution_cma = optimiseur.optimize()
+    treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj, Q)
+    optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+    best_solution_cma = optimizer.Optimize()
 
-    treatment_chain_french_TW_opti = treatment.Treatment_Chain(pathway_french_TW, best_solution_cma, Cin, Cobj, Q)
-    output_function_values = treatment_chain_french_TW_opti.Output_Function(best_solution_cma, Q)
+    treatment_train_french_TW_opti = treatment.Treatment_Train(pathway_french_TW, best_solution_cma, Cin, Cobj, Q)
+    output_function_values = treatment_train_french_TW_opti.Output_Function(best_solution_cma, Q)
     
     print("")
     print("Best solution:", [round(value, 2) for value in best_solution_cma])
@@ -87,8 +89,8 @@ def results(Cin, Cobj, Q, climate) :
         print("Total surface area 2nd floor :",round(Q/best_solution_cma[3]*pathway_french_TW[1].Nb_parallel,2),"m2")
         print("Depth 2nd floor :",round(best_solution_cma[4],2),"m")
     print("---")
-    print("Total volume :",round(treatment_chain_french_TW_opti.Total_Volume_Function(best_solution_cma, Q),2),"m3")
-    print("Total surface area :",round(treatment_chain_french_TW_opti.Total_Surface_Area_Function(best_solution_cma, Q),2),"m2")
+    print("Total volume :",round(treatment_train_french_TW_opti.Total_Volume_Function_Unsat(best_solution_cma, Q),2),"m3")
+    print("Total surface area :",round(treatment_train_french_TW_opti.Total_Surface_Area_Function(best_solution_cma, Q),2),"m2")
     print("")
     print("Outlet concentration:")
     print("")
@@ -132,7 +134,7 @@ def results(Cin, Cobj, Q, climate) :
 ################################################################################
 
 def get_ordinal_suffix(number):
-    """Retourne le suffixe ordinal correct pour un nombre."""
+    """Returns the correct ordinal suffix for a number."""
     if 10 <= number % 100 <= 20:  # Gestion des exceptions comme 11th, 12th, 13th
         return "th"
     elif number % 10 == 1:
@@ -146,7 +148,25 @@ def get_ordinal_suffix(number):
     
 ################################################################################
 
-def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_max, files_max, climate):
+def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
+    """
+    Optimizes and ranks the treatment trains generated exploring all the process combinations, ranks them by volume and prints the results for the user.
+
+    Parameters
+    ----------
+    Cin : list
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+    Cobj : list
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+    Q : float
+        Flow rate (m3/day).
+    climate : str
+        Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
+    stages_max : float
+        Maximum value for the number of stages in series.
+    files_max : float
+        Maximum value for the number of files in parallel.
+    """
     base_directory = r'C:\Users\zoe.legeai\Documents\Source\caribsan-model\CARIBSANcopy\src\CARIBSANcopy'
     sys.path.append(base_directory)
 
@@ -162,7 +182,6 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
         config['VdNS1']['Nb_parallel'] = 2
         config['VdNSS']['Nb_parallel'] = 2
 
-    # Mapping des noms aux classes
     process_mapping = {}
     subclasses = treatment.Pathway.get_subclasses(treatment.Process)
     for subclass in subclasses:
@@ -174,16 +193,15 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
     all_results = []
     for current_stages_max in range(1, stages_max + 1):
         print(f"Optimizing for stages_max = {current_stages_max}...")
-        treatment_chain_MS_TW = treatment.Treatment_Chain([], [], Cin, Cobj, Q)
-        optimiseur = optimization.Optimiseur5(treatment_chain_MS_TW, current_stages_max, files_max)
-        sorted_results = optimiseur.Opti_meilleur_pathway()
+        treatment_train_MS_TW = treatment.Treatment_Train([], [], Cin, Cobj, Q)
+        optimizer = optimization.Optimizer_Gobal_Generation(treatment_train_MS_TW, current_stages_max, files_max)
+        sorted_results = optimizer.Optimize_Best_Pathway()
 
         for result in sorted_results:
             pathway_cleaned = [type(obj).__name__ for obj in result[0]]
             solution = result[2]
             total_volume = result[1]
 
-            # Comparaison améliorée des doublons :
             if not any(
                 existing_result['pathway'] == pathway_cleaned and 
                 np.allclose(existing_result['solution'], solution, atol=1e-3)
@@ -196,6 +214,8 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
                 })
 
     all_results = sorted(all_results, key=lambda x: x['volume'])
+    if not all_results:
+        print("No suitable solutions for this combination of Cin / Cobj")
 
     for position, result in enumerate(all_results):
         print("")
@@ -207,36 +227,31 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
         print("Solution:", [round(value, 2) for value in result['solution']])
         print("")
 
-        # Convertir les noms des processus en instances
         process_instances = [
             process_mapping[process_name](**config[process_name])
             for process_name in result['pathway']
         ]
 
-        treatment_chain_MS_TW_opti = treatment.Treatment_Chain(
-            process_instances,  # Utiliser les instances ici
+        treatment_train_MS_TW_opti = treatment.Treatment_Train(
+            process_instances,
             result['solution'],
             Cin, Cobj, Q
         )
-        output_function_values = treatment_chain_MS_TW_opti.Output_Function(result['solution'], Q)
-        total_volume = treatment_chain_MS_TW_opti.Total_Volume_Function(result['solution'], Q)
 
-        # Calcul dynamique en fonction du nombre de stages dans la treatment chain
+        output_function_values = treatment_train_MS_TW_opti.Output_Function(result['solution'], Q)
+        total_volume = treatment_train_MS_TW_opti.Total_Volume_Function_Unsat(result['solution'], Q)
+
         print("Sizing:")
         print("")
 
-        # Pour chaque stage dans la chaîne de traitement
         for stage_index, pathway in enumerate(result['pathway']):
-            # On récupère l'instance de la classe correspondante
             process_class = process_mapping[pathway]
-            process_instance = process_class(**config[pathway])  # Crée une instance avec la config
+            process_instance = process_class(**config[pathway]) 
 
-            # Calcul de la surface en fonction du processus
             surface_area = round(Q / result['solution'][stage_index * 3] * process_instance.Nb_parallel, 2)
             depth_unsat = round(result['solution'][stage_index * 3 + 1], 2)
             depth_sat = round(result['solution'][stage_index * 3 + 2], 2)
 
-            # Obtenir le suffixe ordinal pour l'étage
             ordinal_suffix = get_ordinal_suffix(stage_index + 1)
 
             print(f"Total surface area {stage_index + 1}{ordinal_suffix} floor :", surface_area, "m²")
@@ -244,9 +259,8 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
             print(f"Saturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_sat, "m")
             print("---")
 
-        # Total volume et surface area pour l'ensemble des stages
-        print("Total volume:", round(treatment_chain_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2), "m³")
-        print("Total surface area:", round(treatment_chain_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
+        print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function_Unsat(result['solution'], Q), 2), "m³")
+        print("Total surface area:", round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
 
         print("")
         print("Outlet concentration:")
@@ -262,28 +276,22 @@ def main_multi_stage_TW_sorted_volume_automatic_generation(Cin, Cobj, Q, stages_
         print("Checking constraints values for solution found by CMA-ES...")
         print("")
         output = Cin
+
         for index, process_name in enumerate(result['pathway']):
             process_class = process_mapping[process_name]
             process_instance = process_class(**config[process_name])
-
             V_values = result['solution'][index * 3: (index + 1) * 3]
 
-            # Calcul des contraintes
             constraint_TSS_pc = 100 * output[0] * V_values[0] / process_instance.Lim_TSS
             print(f"TSS loading contraint stage {index + 1}: {round(constraint_TSS_pc, 2)} %")
-
             constraint_BOD_pc = 100 * output[1] * V_values[0] / process_instance.Lim_BOD
             print(f"BOD loading contraint stage {index + 1}: {round(constraint_BOD_pc, 2)} %")
-
             constraint_TKN_pc = 100 * output[2] * V_values[0] / process_instance.Lim_TKN
             print(f"TKN loading contraint stage {index + 1}: {round(constraint_TKN_pc, 2)} %")
-
             constraint_COD_pc = 100 * (output[3] + output[4] + output[5]) * V_values[0] / process_instance.Lim_COD
             print(f"COD loading contraint stage {index + 1}: {round(constraint_COD_pc, 2)} %")
-
             print("---")
-
-            # Mise à jour des concentrations en sortie
+            
             output = process_instance.Reduction_Function(V_values, output, Q)
 
         print("Outlet TSS deviation:", round(-(Cobj[0] - output_function_values[0]), 2), "mgTSS/L")
