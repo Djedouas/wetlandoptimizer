@@ -1196,7 +1196,7 @@ class Treatment_Train:
     """
     def __init__(self, pathway, V, Cin, Cobj, Q):
         """
-        Initialize the to stage treatment train with given parameters.
+        Initialize the treatment train with given parameters.
 
         Parameters
         ----------
@@ -1609,18 +1609,42 @@ class Treatment_Train:
 ##################################################################################
 
 class Pathway:
-    # Chargement du fichier YAML au niveau de la classe
+    """
+    A class handling the configuration and generation of valid treatment train pathways.
+
+    Attributes
+    ----------
+    stages_max : float
+        Maximum value for the number of stages in series.
+    files_max : float
+        Maximum value for the number of files in parallel.
+
+    Methods
+    -------
+    Get_Subclasses(cls):
+        Recursively retrieves all subclasses of a given class.
+    Possible_Combinations():
+        Generates all valid process combinations with exactly stages_max steps.
+    """
     with open("config.yaml", "r") as file:
         config = yaml.safe_load(file)
 
     def __init__(self, stages_max, files_max):
+        """
+        Initialize the pathway class with given parameters.
+
+        Parameters
+        ----------
+        stages_max : float
+            Maximum value for the number of stages in series.
+        files_max : float
+            Maximum value for the number of files in parallel.
+        """
         self.stages_max = stages_max
         self.files_max = files_max
 
-        # Récupérer toutes les sous-classes de Process
-        subclasses = self.get_subclasses(Process)
+        subclasses = self.Get_Subclasses(Process)
 
-        # Initialiser les processus avec les paramètres du fichier YAML
         self.processes = [
             subclass(**self.config[subclass.__name__])
             for subclass in subclasses
@@ -1628,16 +1652,36 @@ class Pathway:
         ]
 
     @staticmethod
-    def get_subclasses(cls):
-        """Récupère récursivement toutes les sous-classes d'une classe donnée."""
+
+    def Get_Subclasses(cls):
+        """
+        Recursively retrieves all subclasses of a given class.
+
+        Parameters
+        ----------
+        cls : type
+            The class whose subclasses are to be retrieved.
+
+        Returns
+        -------
+        list
+            List of all found subclasses.
+        """
         subclasses = []
         for subclass in cls.__subclasses__():
             subclasses.append(subclass)
-            subclasses.extend(Pathway.get_subclasses(subclass))
+            subclasses.extend(Pathway.Get_Subclasses(subclass))
         return subclasses
 
     def Possible_Combinations(self):
-        """Génère toutes les combinaisons valides de processus ayant exactement stages_max étapes."""
+        """
+        Generates all valid process combinations with exactly stages_max steps.
+
+        Returns
+        -------
+        set
+            Set of valid process combinations as tuples.
+        """
         combinations = set()
         raw_combinations = itertools.product(self.processes, repeat=self.stages_max)
         for combination in raw_combinations:

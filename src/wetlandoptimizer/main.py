@@ -89,7 +89,7 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
         print("Total surface area 2nd floor :",round(Q/best_solution_cma[3]*pathway_french_TW[1].Nb_parallel,2),"m2")
         print("Depth 2nd floor :",round(best_solution_cma[4],2),"m")
     print("---")
-    print("Total volume :",round(treatment_train_french_TW_opti.Total_Volume_Function_Unsat(best_solution_cma, Q),2),"m3")
+    print("Total volume :",round(treatment_train_french_TW_opti.Total_Volume_Function(best_solution_cma, Q),2),"m3")
     print("Total surface area :",round(treatment_train_french_TW_opti.Total_Surface_Area_Function(best_solution_cma, Q),2),"m2")
     print("")
     print("Outlet concentration:")
@@ -183,7 +183,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         config['VdNSS']['Nb_parallel'] = 2
 
     process_mapping = {}
-    subclasses = treatment.Pathway.get_subclasses(treatment.Process)
+    subclasses = treatment.Pathway.Get_Subclasses(treatment.Process)
     for subclass in subclasses:
         process_mapping[subclass.__name__] = subclass
 
@@ -239,7 +239,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         )
 
         output_function_values = treatment_train_MS_TW_opti.Output_Function(result['solution'], Q)
-        total_volume = treatment_train_MS_TW_opti.Total_Volume_Function_Unsat(result['solution'], Q)
+        total_volume = treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q)
 
         print("Sizing:")
         print("")
@@ -259,7 +259,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             print(f"Saturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_sat, "m")
             print("---")
 
-        print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function_Unsat(result['solution'], Q), 2), "m³")
+        print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2), "m³")
         print("Total surface area:", round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
 
         print("")

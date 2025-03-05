@@ -176,7 +176,7 @@ class Optimizer_Gobal_Generation:
                 continue
 
             self.treatment_train.pathway = pathway_combination
-            volume = self.treatment_train.Total_Volume_Function_Unsat(solution, self.treatment_train.Q)
+            volume = self.treatment_train.Total_Volume_Function(solution, self.treatment_train.Q)
 
             constraints_TSSout = self.treatment_train.Create_Constraints_TSSout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
             constraints_BODout = self.treatment_train.Create_Constraints_BODout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
