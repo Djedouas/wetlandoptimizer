@@ -1,16 +1,18 @@
 VdNS1:
   Name: "VdNS_1st_Stage"
   Lim_TSS: 150 # gTSS/m2/day
-  Lim_BOD: 150 # gO2/m2/day
+  Lim_BOD: 150 # gBOD5/m2/day
   Lim_TKN: 50 # gTKN/m2/day
-  Lim_COD: 350 # gTO2/m2/day
+  Lim_COD: 350 # gCOD/m2/day
   Nb_parallel: 3
   Material: "gravel"
   Mat_cost: 1 # (€/m3_mat)/(€/m3_gravel)
-  Xmin: 0.15  # m/day
-  Xmax: 0.7  # m/day
-  Zmin: 0.3  # m
-  Zmax: 0.6  # m
+  Xmin: 0.15 # m/day
+  Xmax: 0.7 # m/day
+  Zmin: 0.3 # m
+  Zmax: 0.6 # m
+  Amin: 0 # m
+  Amax: 1e-8 # m
   Param_TSS: 0.1
   Param_BOD: 0.1
   Param_TKN_a: 1.1375
@@ -20,18 +22,41 @@ VdNS1:
 VdNS2:
   Name: "VdNS_2nd_Stage"
   Lim_TSS: 30 # gTSS/m2/day
-  Lim_BOD: 20 # gO2/m2/day
+  Lim_BOD: 20 # gBOD5/m2/day
   Lim_TKN: 25 # gTKN/m2/day
-  Lim_COD: 70 # gTO2/m2/day
+  Lim_COD: 70 # gCOD/m2/day
   Nb_parallel: 2
   Material: "sand"
   Mat_cost: 1.33 # (€/m3_mat)/(€/m3_gravel)
-  Xmin: 0.15  # m/day
-  Xmax: 0.7  # m/day
-  Zmin: 0.3  # m
-  Zmax: 0.6  # m
+  Xmin: 0.15 # m/day
+  Xmax: 0.7 # m/day
+  Zmin: 0.3 # m
+  Zmax: 0.6 # m
+  Amin: 0 # m
+  Amax: 1e-8 # m
   Param_TSS: 0.2
   Param_BOD: 0.2
   Param_TKN_a: 1.5093
   Param_TKN_b: 0.7887
   Param_CODsb: 7.008
+
+VdNSS:
+  Name: VdNS_1st_Stage_Saturated
+  Lim_TSS: 150 # gTSS/m2/day
+  Lim_BOD: 150 # gBOD5/m2/day
+  Lim_TKN: 50 # gTKN/m2/day
+  Lim_COD: 350 # gCOD/m2/day
+  Nb_parallel: 3
+  Material: gravel
+  Mat_cost: 1 # (€/m3_mat)/(€/m3_gravel)
+  Xmin: 0.15 # m/day
+  Xmax: 0.7 # m/day
+  Zmin: 0.3 # m
+  Zmax: 0.6 # m
+  Amin: 0.4 # m
+  Amax: 1 # m
+  Param_TSS: 0.1
+  Param_BOD: 0.1
+  Param_TKN_a: 1.1375
+  Param_TKN_b: 0.8168
+  Param_CODsb: 3.136

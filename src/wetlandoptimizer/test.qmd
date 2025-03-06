@@ -108,14 +108,20 @@ Please indicate the mesured concentration of the four main pollutants of your te
 # TSS in mTSS/m3
 TSS_in = 288  # please complete with actual value
 
-# BOD5 in gO2/m3
+# BOD5 in gBOD5/m3
 BOD5_in = 265  # please complete with actual value
 
 # TKN in gTKN/m3
 TKN_in = 67  # please complete with actual value
 
-# COD in gO2/m3
+# COD in gCOD/m3
 COD_in = 646  # please complete with actual value
+
+# NO3 in gNO3/m3
+NO3_in = 3  # please complete with actual value
+
+# Summarization and fractionation
+Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in, NO3_in]) # g/m3
 ```
 
 This section sets the flow rate of the water, given in cubic meters per day (m³/d).
@@ -141,32 +147,26 @@ Please indicate the desired concentration of the four main pollutants for your t
 # TSS in gTSS/m3
 TSS_obj = 100  # please complete with actual value
 
-# BOD5 in gO2/m3
+# BOD5 in gBOD5/m3
 BOD5_obj = 100  # please complete with actual value
 
 # TKN in gTKN/m3
-TKN_obj = 100  # please complete with actual value
+TKN_obj = 20  # please complete with actual value
 
-# COD in gO2/m3
-COD_obj = 100  # please complete with actual value
+# COD in gCOD/m3
+COD_obj = 80  # please complete with actual value
+
+# NO3 in gNO3/m3
+NO3_obj = 20 # please complete with actual value
+
+# TN in gTN/m3
+TN_obj = 20 # please complete with actual value
+
+# Summarization
+Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj, NO3_obj, TN_obj] # g/m3
 ```
 
-### 2.4 Fractionation and Summarization
-
-This section calculates the COD fractionation using the COD_Fractionation function from the main module. It also summarize the objective parameters values.
-
-```{python}
-"""
-Calculate the COD fractionation and set target values for COD parameters.
-
-- Cin : The output of the COD fractionation calculation, which represents the COD fractionation in grams per cubic meter (g/m³).
-- Cobj : List of target values for TSS, BOD5, TKN, and COD, given in grams per cubic meter (g/m³).
-"""
-Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in]) # g/m3
-Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj] # g/m3
-```
-
-### 2.5 Climate Definition
+### 2.4 Climate Definition
 
 This section sets out the type of climate prevailing in the study area. This information will impact the sizing of the proposed solution.
 
@@ -176,44 +176,84 @@ Please indicate the climate, by typing "Tropical" or "Temperate".
 # Set climate
 
 # Temperate or Tropical
-climate = "Tropical"  # please complete with actual value 
+climate = "Temperate"  # please complete with actual value 
+```
+
+### 2.5 Maximal Number of Stages and Files Definition
+
+Set the maximum number of treatment stages in serie and the maximum number of files in parallel to be processed.
+
+Please indicate the maximal number of stages and files.
+
+```{python}
+# Set maximal number of stages in serie and files in parallel
+
+# Stage max
+stages_max = 3
+
+# Files max
+files_max = 1
 ```
 
 ## 3. Results
 
-This section calls the main.results function to compute and display the analysis results. It uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate. This function will provide the final results (treatment chain sizing, actual outlet concentration and load limit deviation) based on the specified targets.
+### 3.1 French Vertical Flow Wetland
+
+This section calls the main.Results_French_VF function to compute and display the analysis results. It uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate and the climate. This function will provide the final results (treatment train sizing, actual outlet concentration and load limit deviation) based on the specified targets.
+
+The proposed solution is an optimised version of the French vertical flow wetland. The solution will therefore have the minimum volume to achieve the treatment objective.
 
 ```{python}
 """
-Run the main results function with the input and objective water quality parameters, along with the flow rate.
+Run the main Results_French_VF function with the input and objective water quality parameters, along with the flow rate and the climate.
 
-- main.results: Function that generates the final results of the analysis based on input and target values.
+- main.Results_French_VF: Function that generates the optimized treatment wetland based on input and target values, with minimal volume.
 
 Parameters
 ----------
-TSS_in : float
-    Total Suspended Solids concentration in the influent (g/m³).
-BOD5_in : float
-    Biological Oxygen Demand over 5 days in the influent (gO2/m³).
-TKN_in : float
-    Total Kjeldahl Nitrogen concentration in the influent (gTKN/m³).
-COD_in : float
-    Chemical Oxygen Demand concentration in the influent (gO2/m³).
-TSS_obj : float
-    Target Total Suspended Solids concentration in the effluent (g/m³).
-BOD5_obj : float
-    Target Biological Oxygen Demand over 5 days in the effluent (gO2/m³).
-TKN_obj : float
-    Target Total Kjeldahl Nitrogen concentration in the effluent (gTKN/m³).
-COD_obj : float
-    Target Chemical Oxygen Demand concentration in the effluent (gO2/m³).
+Cin : list
+    Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+Cobj : list
+    Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
 Q : float
     Flow rate of the influent (m³/day).
+climate : str
+    Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 """
-main.results(TSS_in,BOD5_in,TKN_in,COD_in,TSS_obj,BOD5_obj,TKN_obj,COD_obj,Q,climate)
+main.Results_French_VF(Cin, Cobj, Q, climate) 
 ```
 
-## 4. Graphical visualization
+### 3.2 Global Treatment Train Generation
+
+This section calls the main.Results_Global_Generation function to compute and display the analysis results. As the precedent section, it uses the initialized input parameters (TSS, BOD5, TKN, COD) and their corresponding objective values, along with the specified flow rate and the climate. For this function, the stages_max and files_max parameters are asked too. This function will provide the final results (treatment trains sizing, actual outlet concentration and load limit deviation) based on the specified targets.
+
+The proposed solution(s) are optimised treatment trains, with the algorithm taking into account all possible combinations of processes. They are then sorted by volume.
+
+```{python}
+"""
+Run the main Results_Global_Generation function with the input and objective water quality parameters, along with the flow rate, the climate, and the stage and file maximum value.
+
+- main.Results_Global_Generation: Function that generates the optimized treatment trains, based on input and target values, ranked by volume.
+
+Parameters
+----------
+Cin : list
+    Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+Cobj : list
+    Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+Q : float
+    Flow rate of the influent (m³/day).
+climate : str
+    Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
+stages_max : float
+    Maximum value for the number of stages in series.
+files_max : float
+    Maximum value for the number of files in parallel.
+"""
+main.Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate)
+```
+
+## 4. Graphical visualization (for French vertical flow wetland)
 
 ### 4.1 People Equivalent Calculation
 
@@ -250,7 +290,7 @@ This section defines the Plot_SurfaceArea_AsAFunctionOf_TKN function, which perf
 Loads configuration settings from a YAML file. Defines a range of target values for the treatment. Computes various metrics related to the treatment process using custom functions. Plots these metrics to visualize the relationship between treatment targets and system performance. The function generates a plot showing total surface areas for two stages of treatment and total volume as a function of the treatment target.
 
 ```{python}
-def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
+def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q, climate):
     """
     Perform calculations and generate plots for treatment targets and their impacts.
 
@@ -268,6 +308,8 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
         Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
     Q : float
         The flow rate in cubic meters per day (m³/d).
+    climate : str
+        Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
     Raises
     ------
@@ -287,7 +329,7 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
 
     Examples
     --------
-    >>> Plot_SurfaceArea_AsAFunctionOf_TKN(5, 20, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226)
+    >>> Plot_SurfaceArea_AsAFunctionOf_TKN(5, 20, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226, "tropical")
     """
     config_path = os.path.join(base_directory, 'config.yaml')
     
@@ -297,13 +339,16 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
 
+    if climate == "Tropical":
+        config['VdNS1']['Nb_parallel'] = 2
+
     vdns1 = treatment.VdNS1(**config['VdNS1'])
     vdns2 = treatment.VdNS2(**config['VdNS2'])
     pathway_french_TW = [vdns1, vdns2]
 
     lx = [a + i * (b - a) / N for i in range(N + 1)]
 
-    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q):
+    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total volume for a given treatment target.
 
@@ -319,23 +364,25 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
         float
             The total volume in cubic meters.
         """
-        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3], Cobj[4], Cobj[5]]
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         term1 = (Q / best_solution_cma[0]) * best_solution_cma[1] * vdns1.Nb_parallel
         term2 = (Q / best_solution_cma[2]) * best_solution_cma[3] * vdns2.Nb_parallel
         return term1 + term2
 
-    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q):
+    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total surface area for the first stage of treatment.
 
@@ -351,21 +398,23 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
         float
             The total surface area for the first stage of treatment in square meters per person equivalent (m²/PE).
         """
-        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3], Cobj[4], Cobj[5]]
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         return (Q/best_solution_cma[0])/(Calculation_PE_DBO5(Cin,Q)) * vdns1.Nb_parallel
 
-    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q):
+    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total surface area for the second stage of treatment.
 
@@ -381,23 +430,25 @@ def Plot_SurfaceArea_AsAFunctionOf_TKN(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
         float
             The total surface area for the second stage of treatment in square meters per person equivalent (m²/PE).
         """        
-        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3]]
+        Cobj_x = [Cobj[0], Cobj[1], x, Cobj[3], Cobj[4], Cobj[5]]
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         return (Q/best_solution_cma[2])/(Calculation_PE_DBO5(Cin, Q)) * vdns2.Nb_parallel
     
-    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
-    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
-    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
+    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
+    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
 
     data_surfacearea = {'Treatment target (mgNTK/L)': lx, 'Total volume (m3)': ly1,'Total surface area 1st floor (m2/PE)': ly2, 'Total surface area 2nd floor (m2/PE)': ly3}
     print("data done")
@@ -465,8 +516,9 @@ Call the function to generate plots for the treatment targets and their impacts.
   - Cin : Inlet concentration values for TSS, BOD5, TKN, and COD.
   - Cobj : Target concentration values for TSS, BOD5, TKN, and COD.
   - Q : Flow rate in cubic meters per day (m³/d).
+  - climate : Climate type, either "temperate" or "tropical".
 """
-Plot_SurfaceArea_AsAFunctionOf_TKN(a_surfacearea, b_surfacearea, N_surfacearea, Cin, Cobj, Q)
+Plot_SurfaceArea_AsAFunctionOf_TKN(a_surfacearea, b_surfacearea, N_surfacearea, Cin, Cobj, Q, climate)
 ```
 
 ### 4.3 Visualization of Depths
@@ -476,7 +528,7 @@ This section defines the Plot_Depth_AsAFunctionOf_COD function, which performs c
 Loads configuration settings from a YAML file. Defines a range of target values for the treatment. Computes various metrics related to the treatment depth and volume using custom functions. Plots these metrics to visualize the relationship between treatment targets and system performance. The function generates a plot showing the total depths for two stages of treatment and total volume as a function of COD treatment targets.
 
 ```{python}
-def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
+def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q, climate):
     """
     Perform calculations and generate plots for treatment depth targets and their impacts.
 
@@ -494,6 +546,8 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
     Q : float
         The flow rate in cubic meters per day (m³/d).
+    climate : str
+        Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
     Raises
     ------
@@ -513,7 +567,7 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
 
     Examples
     --------
-    >>> Plot_Depth_AsAFunctionOf_COD(20, 80, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226)
+    >>> Plot_Depth_AsAFunctionOf_COD(20, 80, 100, [288, 265, 67, 646], [40, 40, 8, 40], 226, "tropical")
     """  
     config_path = os.path.join(base_directory, 'config.yaml')
     
@@ -521,7 +575,10 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         raise FileNotFoundError(f"No such file or directory: '{config_path}'")
     
     with open(config_path, 'r') as file:
-        config = yaml.safe_load(file) 
+        config = yaml.safe_load(file)
+    
+    if climate == "Tropical":
+        config['VdNS1']['Nb_parallel'] = 2
     
     vdns1 = treatment.VdNS1(**config['VdNS1'])
     vdns2 = treatment.VdNS2(**config['VdNS2'])
@@ -529,11 +586,7 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
 
     lx = [a + i * (b - a) / N for i in range(N + 1)]
 
-    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q):
-        print(Cin)
-        print(Cobj)
-        print(pathway_french_TW)
-        print(Q)
+    def compute_ly1(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total volume for a given treatment target.
 
@@ -549,6 +602,8 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
@@ -558,15 +613,15 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
         print(Cobj_x)
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         term1 = (Q / best_solution_cma[0]) * best_solution_cma[1] * vdns1.Nb_parallel
         term2 = (Q / best_solution_cma[2]) * best_solution_cma[3] * vdns2.Nb_parallel
         return term1 + term2
 
-    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q):
+    def compute_ly2(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total depth for the first stage of treatment.
 
@@ -582,6 +637,8 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
@@ -591,13 +648,13 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
         print(Cobj_x)
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         return best_solution_cma[1]
 
-    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q):
+    def compute_ly3(x, pathway_french_TW, Cin, Cobj, Q, climate):
         """
         Compute the total depth for the second stage of treatment.
 
@@ -613,6 +670,8 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
             Target concentration values for TSS, BOD5, TKN, and COD in grams per cubic meter (g/m³).
         Q : float
             The flow rate in cubic meters per day (m³/d).
+        climate : str
+            Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
 
         Returns
         -------
@@ -621,15 +680,15 @@ def Plot_Depth_AsAFunctionOf_COD(a, b, N, Cin, Cobj, Q):
         """        
         Cobj_x = [Cobj[0], Cobj[1], Cobj[2], x]
 
-        treatment_chain_french_TW = treatment.Treatment_Chain(pathway_french_TW, [], Cin, Cobj_x, Q)
-        optimiseur = optimization.CMAES(treatment_chain_french_TW)
-        best_solution_cma = optimiseur.optimize()
+        treatment_train_french_TW = treatment.Treatment_Train(pathway_french_TW, [], Cin, Cobj_x, Q)
+        optimizer = optimization.Optimizer_French_VF(treatment_train_french_TW)
+        best_solution_cma = optimizer.Optimize()
 
         return best_solution_cma[3]
       
-    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
-    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
-    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q) for x in lx]
+    ly1 = [compute_ly1(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
+    ly2 = [compute_ly2(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
+    ly3 = [compute_ly3(x, pathway_french_TW, Cin, Cobj, Q, climate) for x in lx]
 
     data_depth = {'Treatment target (mgO2/L)': lx, 'Total volume (m3)': ly1,'Total depth 1st floor (m)': ly2, 'Total depth 2nd floor (m)': ly3}
     print("data done")
@@ -696,7 +755,8 @@ Call the function to generate plots for the treatment targets and their impacts.
   - Cin : Inlet concentration values for TSS, BOD5, TKN, and COD.
   - Cobj : Target concentration values for TSS, BOD5, TKN, and COD.
   - Q : Flow rate in cubic meters per day (m³/d).
+  - climate : Climate type, either "temperate" or "tropical".
 """
-Plot_Depth_AsAFunctionOf_COD(a_depth, b_depth, N_depth, Cin, Cobj, Q)
+Plot_Depth_AsAFunctionOf_COD(a_depth, b_depth, N_depth, Cin, Cobj, Q, climate)
 ```
 
