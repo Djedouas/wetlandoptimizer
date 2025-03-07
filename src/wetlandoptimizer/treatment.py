@@ -1,3 +1,4 @@
+import os
 import math
 import numpy as np
 import yaml
@@ -1626,7 +1627,9 @@ class Pathway:
     Possible_Combinations():
         Generates all valid process combinations with exactly stages_max steps.
     """
-    with open("config.yaml", "r") as file:
+    base_directory = os.path.dirname(os.path.abspath(__file__))
+    config_path = os.path.join(base_directory, 'config.yaml')
+    with open(config_path, "r") as file:
         config = yaml.safe_load(file)
 
     def __init__(self, stages_max, files_max):

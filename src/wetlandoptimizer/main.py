@@ -167,9 +167,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
     files_max : float
         Maximum value for the number of files in parallel.
     """
-    base_directory = r'C:\Users\zoe.legeai\Documents\Source\caribsan-model\CARIBSANcopy\src\CARIBSANcopy'
-    sys.path.append(base_directory)
-
+    base_directory = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_directory, 'config.yaml')
     
     if not os.path.exists(config_path):
