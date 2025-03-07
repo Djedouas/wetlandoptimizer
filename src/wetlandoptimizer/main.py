@@ -1,5 +1,5 @@
-import treatment
-import optimization
+from wetlandoptimizer import treatment
+from wetlandoptimizer import optimization
 import yaml
 import sys
 import os

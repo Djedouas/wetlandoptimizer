@@ -1,6 +1,6 @@
 import numpy as np # type: ignore
 import cma  # type: ignore
-import treatment
+from wetlandoptimizer import treatment
 
 class Optimizer_French_VF:
     """
