@@ -4,6 +4,41 @@ import yaml
 import sys
 import os
 import numpy as np
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+@dataclass
+class PathwayResult:
+    name_stages: list[str] = field(default_factory=list)
+    id: Optional[int] = None
+    surface_stages: list[float] = field(default_factory=list)
+    unsaturated_depth_stages: list[float] = field(default_factory=list)
+    saturated_depth_stages: list[float] = field(default_factory=list)
+    TSS_loading_stages: list[float] = field(default_factory=list)
+    BOD5_loading_stages: list[float] = field(default_factory=list)
+    TKN_loading_stages: list[float] = field(default_factory=list)
+    COD_loading_stages: list[float] = field(default_factory=list)
+    hydraulic_loading_rate_stages: list[float] = field(default_factory=list)
+    total_surface: Optional[float] = None
+    total_volume: Optional[float] = None
+    TSS_concentration: Optional[float] = None
+    BOD5_concentration: Optional[float] = None
+    TKN_concentration: Optional[float] = None
+    COD_concentration: Optional[float] = None
+    NO3_concentration: Optional[float] = None
+    TN_concentration: Optional[float] = None
+    P_concentration: Optional[float] = None
+    col_concentration: Optional[float] = None
+    TSS_deviation: Optional[float] = None
+    BOD5_deviation: Optional[float] = None
+    TKN_deviation: Optional[float] = None
+    COD_deviation: Optional[float] = None
+    NO3_deviation: Optional[float] = None
+    TN_deviation: Optional[float] = None
+    P_deviation: Optional[float] = None
+    col_deviation: Optional[float] = None
+
 
 def COD_Fractionation(pollutants_in):
     """
@@ -125,12 +160,12 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
 
     print("Outlet TSS deviation:",round(-(Cobj[0] - output_function_values[0]),2),"mgTSS/L")
     print("Outlet BOD5 deviation:",round(-(Cobj[1] - output_function_values[1]),2),"mgO2/L")
-    if Cobj[2] != None:        
+    if Cobj[2] is not None:        
         print("Outlet TKN deviation:",round(-(Cobj[2] - output_function_values[2]),2),"mgTKN/L")
     print("Outlet COD deviation:",round(-(Cobj[3] - (output_function_values[3]+output_function_values[4]+output_function_values[5])),2),"mgO2/L")
-    if Cobj[4] != None :
+    if Cobj[4] is not None :
         print("Outlet NO3 deviation:",round(-(Cobj[4] - output_function_values[6]),2),"mgNO3/L")
-    if Cobj[5] != None:    
+    if Cobj[5] is not None:    
         print("Outlet TN deviation:",round(-(Cobj[5] - (output_function_values[2]+output_function_values[6])),2),"mgO2/L")
     if Cobj[6] != None:    
         print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
@@ -221,6 +256,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
     if not all_results:
         print("No suitable solutions for this combination of Cin / Cobj")
 
+    pathway_results = []
     for position, result in enumerate(all_results):
         print("")
         print("################################################################################")
@@ -230,6 +266,10 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         print("")
         print("Solution:", [round(value, 2) for value in result['solution']])
         print("")
+
+        pathway_result = PathwayResult()
+        pathway_result.id = position
+        pathway_result.name_stages = result["pathway"]
 
         process_instances = [
             process_mapping[process_name](**config[process_name])
@@ -263,8 +303,15 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             print(f"Saturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_sat, "m")
             print("---")
 
+            pathway_result.surface_stages.append(surface_area)
+            pathway_result.unsaturated_depth_stages.append(depth_unsat)
+            pathway_result.saturated_depth_stages.append(depth_sat)
+
         print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2), "m³")
         print("Total surface area:", round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
+
+        pathway_result.total_volume = round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2)
+        pathway_result.total_surface = round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2)
 
         print("")
         print("Outlet concentration:")
@@ -277,6 +324,15 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
         print("P (mgP/L):", round(output_function_values[7], 2))
         print("Coliformes (log):", round(output_function_values[8], 2))
+
+        pathway_result.TSS_concentration = round(output_function_values[0], 2)
+        pathway_result.BOD5_concentration = round(output_function_values[1], 2)
+        pathway_result.TKN_concentration = round(output_function_values[2], 2)
+        pathway_result.COD_concentration = round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2)
+        pathway_result.NO3_concentration = round(output_function_values[6], 2)
+        pathway_result.TN_concentration = round(output_function_values[2]+output_function_values[6], 2)
+        pathway_result.P_concentration = round(output_function_values[7], 2)
+        pathway_result.col_concentration = round(output_function_values[8], 2)
 
         print("")
         print("Checking constraints values for solution found by CMA-ES...")
@@ -300,22 +356,39 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             constraint_hydraulic_pc = 100 * (V_values[0] - process_instance.Xmin) / (process_instance.Xmax - process_instance.Xmin)
             print(f"Hydraulic loading constraint stage {index + 1}: {round(constraint_hydraulic_pc, 2)} %")
             print("---")
+
+            pathway_result.TSS_loading_stages.append(round(constraint_TSS_pc, 2))
+            pathway_result.BOD5_loading_stages.append(round(constraint_BOD_pc, 2))
+            pathway_result.TKN_loading_stages.append(round(constraint_TKN_pc, 2))
+            pathway_result.COD_loading_stages.append(round(constraint_COD_pc, 2))
             
             output = process_instance.Reduction_Function(V_values, output, Q)
 
         print("Outlet TSS deviation:", round(-(Cobj[0] - output_function_values[0]), 2), "mgTSS/L")
+        pathway_result.TSS_deviation = round(-(Cobj[0] - output_function_values[0]), 2)
         print("Outlet BOD5 deviation:", round(-(Cobj[1] - output_function_values[1]), 2), "mgO2/L")
-        if Cobj[2] != None:        
+        pathway_result.BOD5_deviation = round(-(Cobj[1] - output_function_values[1]), 2)
+        if Cobj[2] is not None:        
             print("Outlet TKN deviation:", round(-(Cobj[2] - output_function_values[2]), 2), "mgTKN/L")
+            pathway_result.TKN_deviation = round(-(Cobj[2] - output_function_values[2]), 2)
         print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
-        if Cobj[4] != None:
+        pathway_result.COD_deviation = round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2)
+        if Cobj[4] is not None:
             print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
-        if Cobj[5] != None:
+            pathway_result.NO3_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
+        if Cobj[5] is not None:
             print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
+            pathway_result.TN_deviation = round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2)
         if Cobj[6] != None:    
-            print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+            print("Outlet P deviation:", round(-(Cobj[6] - (output_function_values[7])), 2),"mgP/L")
+            pathway_result.P_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
         if Cobj[7] != None:    
             print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
+            pathway_result.col_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
+            
+        pathway_results.append(pathway_result)
+
+    return pathway_results
 
 ################################################################################
 
@@ -338,9 +411,7 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
     files_max : float
         Maximum value for the number of files in parallel.
     """
-    base_directory = r'C:\Users\zoe.legeai\Documents\Source\caribsan-model\CARIBSANcopy\src\CARIBSANcopy'
-    sys.path.append(base_directory)
-
+    base_directory = os.path.dirname(os.path.abspath(__file__))
     config_path = os.path.join(base_directory, 'config.yaml')
     
     if not os.path.exists(config_path):
@@ -388,6 +459,7 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
     if not all_results:
         print("No suitable solutions for this combination of Cin / Cobj")
 
+    pathway_results = []
     for position, result in enumerate(all_results):
         print("")
         print("################################################################################")
@@ -397,6 +469,10 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
         print("")
         print("Solution:", [round(value, 2) for value in result['solution']])
         print("")
+
+        pathway_result = PathwayResult()
+        pathway_result.id = position
+        pathway_result.name_stages = result["pathway"]
 
         process_instances = [
             process_mapping[process_name](**config[process_name])
@@ -430,8 +506,15 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
             print(f"Saturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_sat, "m")
             print("---")
 
+            pathway_result.surface_stages.append(surface_area)
+            pathway_result.unsaturated_depth_stages.append(depth_unsat)
+            pathway_result.saturated_depth_stages.append(depth_sat)
+
         print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2), "m³")
         print("Total surface area:", round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
+
+        pathway_result.total_volume = round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2)
+        pathway_result.total_surface = round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2)
 
         print("")
         print("Outlet concentration:")
@@ -444,6 +527,15 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
         print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
         print("P (mgP/L):", round(output_function_values[7], 2))
         print("Coliformes (log):", round(output_function_values[8], 2))
+
+        pathway_result.TSS_concentration = round(output_function_values[0], 2)
+        pathway_result.BOD5_concentration = round(output_function_values[1], 2)
+        pathway_result.TKN_concentration = round(output_function_values[2], 2)
+        pathway_result.COD_concentration = round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2)
+        pathway_result.NO3_concentration = round(output_function_values[6], 2)
+        pathway_result.TN_concentration = round(output_function_values[2]+output_function_values[6], 2)
+        pathway_result.P_concentration = round(output_function_values[7], 2)
+        pathway_result.col_concentration = round(output_function_values[8], 2)
 
         print("")
         print("Checking constraints values for solution found by CMA-ES...")
@@ -468,18 +560,35 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
             print(f"Hydraulic loading constraint stage {index + 1}: {round(constraint_hydraulic_pc, 2)} %")
             print("---")
             
+            pathway_result.TSS_loading_stages.append(round(constraint_TSS_pc, 2))
+            pathway_result.BOD5_loading_stages.append(round(constraint_BOD_pc, 2))
+            pathway_result.TKN_loading_stages.append(round(constraint_TKN_pc, 2))
+            pathway_result.COD_loading_stages.append(round(constraint_COD_pc, 2))
+            
             output = process_instance.Reduction_Function(V_values, output, Q)
 
         print("Outlet TSS deviation:", round(-(Cobj[0] - output_function_values[0]), 2), "mgTSS/L")
+        pathway_result.TSS_deviation = round(-(Cobj[0] - output_function_values[0]), 2)
         print("Outlet BOD5 deviation:", round(-(Cobj[1] - output_function_values[1]), 2), "mgO2/L")
+        pathway_result.BOD5_deviation = round(-(Cobj[1] - output_function_values[1]), 2)
         if Cobj[2] != None:        
             print("Outlet TKN deviation:", round(-(Cobj[2] - output_function_values[2]), 2), "mgTKN/L")
+            pathway_result.TKN_deviation = round(-(Cobj[2] - output_function_values[2]), 2)
         print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
+        pathway_result.COD_deviation = round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2)
         if Cobj[4] != None:
             print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
+            pathway_result.NO3_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
         if Cobj[5] != None:
             print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
+            pathway_result.TN_deviation = round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2)
         if Cobj[6] != None:    
             print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+            pathway_result.P_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
         if Cobj[7] != None:    
             print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
+            pathway_result.col_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
+
+        pathway_results.append(pathway_result)
+
+    return pathway_results
