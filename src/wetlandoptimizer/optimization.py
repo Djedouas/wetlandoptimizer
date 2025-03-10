@@ -1,4 +1,5 @@
 import numpy as np # type: ignore
+import threading
 import cma  # type: ignore
 from wetlandoptimizer import treatment
 
@@ -151,6 +152,42 @@ class Optimizer_Gobal_Generation:
         # es = None
         return best_solution_cma
       
+    def process_combination(self, pathway_combination, best_results_lock, rejected_results_lock, best_results, rejected_results):
+        solution = self.Optimize(pathway_combination)
+
+        if solution is None:
+            with rejected_results_lock:
+                print(f"No suitable solutions for this combination of Cin / Cobj: {pathway_combination}")
+                rejected_results.append([pathway_combination, None])
+            return
+
+        self.treatment_train.pathway = pathway_combination
+        volume = self.treatment_train.Total_Volume_Function(solution, self.treatment_train.Q)
+
+        # Créer les différentes contraintes
+        constraints_list = [
+            self.treatment_train.Create_Constraints_TSSout(solution, self.treatment_train.Cobj, self.treatment_train.Q),
+            self.treatment_train.Create_Constraints_BODout(solution, self.treatment_train.Cobj, self.treatment_train.Q),
+            self.treatment_train.Create_Constraints_TKNout(solution, self.treatment_train.Cobj, self.treatment_train.Q),
+            self.treatment_train.Create_Constraints_CODout(solution, self.treatment_train.Cobj, self.treatment_train.Q),
+            self.treatment_train.Create_Constraints_NO3out(solution, self.treatment_train.Cobj, self.treatment_train.Q),
+            self.treatment_train.Create_Constraints_TNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
+        ]
+
+        # Vérification des contraintes
+        constraints_met = all(all(c >= 0 for c in constraint) for constraint in constraints_list)
+
+        if constraints_met:
+            with best_results_lock:
+                best_results.append([pathway_combination, volume, solution])
+        else:
+            with rejected_results_lock:
+                rejected_results.append([pathway_combination, solution])
+                # Optionnel : Ajouter des informations sur quelles contraintes ont échoué
+                for i, constraint in enumerate(constraints_list):
+                    if any(c < 0 for c in constraint):
+                        print(f"Constraint {i+1} violated for pathway {pathway_combination}")
+
     def Optimize_Best_Pathway(self):
         """
         Generate the possible combinations and call the Optimize() function for each generated treatment train.
@@ -164,38 +201,23 @@ class Optimizer_Gobal_Generation:
         pathways_possibles = pathway.Possible_Combinations()
         print(pathways_possibles)
 
+        threads = []
         best_results = []
         rejected_results = []
+        best_results_lock = threading.Lock()
+        rejected_results_lock = threading.Lock()
 
         for pathway_combination in pathways_possibles:
-            solution = self.Optimize(pathway_combination)
+            # Créer un thread pour chaque combinaison
+            thread = threading.Thread(target=self.process_combination,
+                                      args=(pathway_combination, best_results_lock, rejected_results_lock, best_results, rejected_results)
+                                      )
+            threads.append(thread)
+            thread.start()
 
-            if solution is None:
-                print("No suitable solutions for this combination of Cin / Cobj")
-                rejected_results.append([pathway_combination, None])
-                continue
-
-            self.treatment_train.pathway = pathway_combination
-            volume = self.treatment_train.Total_Volume_Function(solution, self.treatment_train.Q)
-
-            constraints_TSSout = self.treatment_train.Create_Constraints_TSSout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_BODout = self.treatment_train.Create_Constraints_BODout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_TKNout = self.treatment_train.Create_Constraints_TKNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_CODout = self.treatment_train.Create_Constraints_CODout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_NO3out = self.treatment_train.Create_Constraints_NO3out(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_TNout = self.treatment_train.Create_Constraints_TNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)            
-
-            constraints_met = all(c >= 0 for c in constraints_TSSout) and \
-                            all(c >= 0 for c in constraints_BODout) and \
-                            all(c >= 0 for c in constraints_TKNout) and \
-                            all(c >= 0 for c in constraints_CODout) and \
-                            all(c >= 0 for c in constraints_NO3out) and \
-                            all(c >= 0 for c in constraints_TNout)
-
-            if constraints_met:
-                best_results.append([pathway_combination, volume, solution])
-            if not constraints_met:
-                rejected_results.append([pathway_combination, solution])
+        # Attendre que tous les threads aient terminé
+        for thread in threads:
+            thread.join()
 
         rejected_names = [
             [type(process).__name__ for process in pathway_combination]
