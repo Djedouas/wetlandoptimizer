@@ -338,12 +338,16 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             print(f"TKN loading contraint stage {index + 1}: {round(constraint_TKN_pc, 2)} %")
             constraint_COD_pc = 100 * (output[3] + output[4] + output[5]) * V_values[0] / process_instance.Lim_COD
             print(f"COD loading contraint stage {index + 1}: {round(constraint_COD_pc, 2)} %")
+            print("")
+            constraint_hydraulic_pc = 100 * (V_values[0] - process_instance.Xmin) / (process_instance.Xmax - process_instance.Xmin)
+            print(f"Hydraulic loading constraint stage {index + 1}: {round(constraint_hydraulic_pc, 2)} %")
             print("---")
 
             pathway_result.TSS_loading_stages.append(round(constraint_TSS_pc, 2))
             pathway_result.BOD5_loading_stages.append(round(constraint_BOD_pc, 2))
             pathway_result.TKN_loading_stages.append(round(constraint_TKN_pc, 2))
             pathway_result.COD_loading_stages.append(round(constraint_COD_pc, 2))
+            pathway_result.hydraulic_loading_rate_stages.append(round(constraint_hydraulic_pc, 2))
             
             output = process_instance.Reduction_Function(V_values, output, Q)
 
