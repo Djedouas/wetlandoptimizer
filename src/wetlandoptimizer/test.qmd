@@ -105,23 +105,29 @@ Please indicate the mesured concentration of the four main pollutants of your te
 ```{python}
 # Initialize water quality parameters
 
-# TSS in mTSS/m3
+# TSS in mgTSS/L
 TSS_in = 288  # please complete with actual value
 
-# BOD5 in gBOD5/m3
+# BOD5 in mgBOD5/L
 BOD5_in = 265  # please complete with actual value
 
-# TKN in gTKN/m3
+# TKN in mgTKN/L
 TKN_in = 67  # please complete with actual value
 
-# COD in gCOD/m3
+# COD in mgCOD/L
 COD_in = 646  # please complete with actual value
 
-# NO3 in gNO3/m3
+# NO3 in mgNO3/L
 NO3_in = 3  # please complete with actual value
 
+# P in mgP/L
+P_in = 0 # please complete with actual value
+
+# Coliforms in log
+col_in = 0
+
 # Summarization and fractionation
-Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in, NO3_in]) # g/m3
+Cin = main.COD_Fractionation([TSS_in, BOD5_in, TKN_in, COD_in, NO3_in, P_in, col_in]) 
 ```
 
 This section sets the flow rate of the water, given in cubic meters per day (m³/d).
@@ -137,33 +143,39 @@ Q = 226  # please complete with actual value
 
 ### 2.3 Objective Parameter Definitions
 
-This section sets the target values for various water quality parameters. These target values represent the desired outcomes for TSS, BOD5, TKN, COD.
+This section sets the target values for various water quality parameters. These target values represent the desired outcomes for TSS, BOD5, TKN, COD, NO3, TN, P and coliforms.
 
 Please indicate the desired concentration of the four main pollutants for your test outlet.
 
 ```{python}
 # Set target values for water quality parameters
 
-# TSS in gTSS/m3
+# TSS in mgTSS/L
 TSS_obj = 100  # please complete with actual value
 
-# BOD5 in gBOD5/m3
+# BOD5 in mgBOD5/L
 BOD5_obj = 100  # please complete with actual value
 
-# TKN in gTKN/m3
-TKN_obj = 20  # please complete with actual value
+# TKN in mgTKN/L
+TKN_obj = 20  # please complete with actual value or None
 
-# COD in gCOD/m3
+# COD in mgCOD/L
 COD_obj = 80  # please complete with actual value
 
-# NO3 in gNO3/m3
-NO3_obj = 20 # please complete with actual value
+# NO3 in mgNO3/L
+NO3_obj = 20 # please complete with actual value or None
 
-# TN in gTN/m3
-TN_obj = 20 # please complete with actual value
+# TN in mgTN/L
+TN_obj = None # please complete with actual value or None
+
+# P in mgP/L
+P_obj = None # please complete with actual value or None
+
+# Coliforms in log
+col_obj = None # please complete with actual value or None
 
 # Summarization
-Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj, NO3_obj, TN_obj] # g/m3
+Cobj = [TSS_obj, BOD5_obj, TKN_obj, COD_obj, NO3_obj, TN_obj, P_obj, col_obj]
 ```
 
 ### 2.4 Climate Definition
@@ -192,7 +204,7 @@ Please indicate the maximal number of stages and files.
 stages_max = 3
 
 # Files max
-files_max = 1
+files_max = 10
 ```
 
 ## 3. Results

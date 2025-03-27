@@ -48,9 +48,9 @@ class Process:
     param_CODsb : float
         Reduction parameter related to CODsb.
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L), [P]in1 : Cin[7] (mgP/L), [col]in : Cin[7] (log)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
     V_values : list
         Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
     Q : float
@@ -132,9 +132,9 @@ class Process:
         param_CODsb : float
             Reduction parameter related to CODsb.
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Q : float
@@ -173,14 +173,14 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Q : float
             Flow rate (m3/day).
 
         Returns
         -------
         list
-            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[4] (mgNO3/L), [TN]out : Cout[5] (mgN/L)).
+            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[6] (mgNO3/L), [TN]out : Cout[7] (mgN/L), [P]out : Cout[8] (mgP/L), [col]out : Cin[9] (log)).
         """
         pass
     
@@ -193,7 +193,7 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         
         Returns
         -------
@@ -211,7 +211,7 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         
         Returns
         -------
@@ -229,7 +229,7 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         
         Returns
         -------
@@ -247,7 +247,7 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         
         Returns
         -------
@@ -385,9 +385,9 @@ class Process:
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         
         Returns
         -------
@@ -454,9 +454,9 @@ class VdNS1(Process):
     param_CODsb : float
         Reduction parameter related to CODsb.
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
     V_values : list
         Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
     Q : float
@@ -544,7 +544,7 @@ class VdNS1(Process):
         Cin : list
             Input concentrations ([TSS]in : Cin[0] (gTSS/m3), [BOD5]in : Cin[1] (gO2/m3), [TKN]in : Cin[2] (gTKN/m3), [CODdb]in : Cin[3] (gO2/m2), [CODdi]in : Cin[4] (gO2/m3), [CODp]in : Cin[5] (gO2/m3)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgDBO5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Q : float
@@ -561,14 +561,14 @@ class VdNS1(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Q : float
             Flow rate (m3/day).
 
         Returns
         -------
         list
-            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[4] (mgNO3/L), [TN]out : Cout[5] (mgN/L)).
+            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[6] (mgNO3/L), [TN]out : Cout[7] (mgN/L), [P]out : Cout[8] (mgP/L), [col]out : Cin[9] (log)).
         """
         TSS_out1 = Cin[0] * self.Param_TSS
         if TSS_out1 < 0:
@@ -602,8 +602,16 @@ class VdNS1(Process):
         NO3_out1 = Cin[6] + (Cin[2] - TKN_out1)
         if NO3_out1 < 0:
             NO3_out1 = 0
+
+        P_out1 = Cin[7]
+        if P_out1 < 0:
+            P_out1 = 0
+
+        col_out1 = Cin[8]
+        if col_out1 < 0:
+            col_out1 = 0
         
-        Cout1 = [TSS_out1, BOD5_out1, TKN_out1, CODsb_out1, CODsi_out1, CODp_out1, NO3_out1]
+        Cout1 = [TSS_out1, BOD5_out1, TKN_out1, CODsb_out1, CODsi_out1, CODp_out1, NO3_out1, P_out1, col_out1]
     
         return Cout1
       
@@ -639,9 +647,9 @@ class VdNS1(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         
         Returns
         -------
@@ -715,9 +723,9 @@ class VdNS2(Process):
     param_CODsb : float
         Reduction parameter related to CODsb.
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
     V_values : list
         Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
     Q : float
@@ -805,7 +813,7 @@ class VdNS2(Process):
         Cin : list
             Input concentrations ([TSS]in : Cin[0] (gTSS/m3), [BOD5]in : Cin[1] (gO2/m3), [TKN]in : Cin[2] (gTKN/m3), [CODdb]in : Cin[3] (gO2/m2), [CODdi]in : Cin[4] (gO2/m3), [CODp]in : Cin[5] (gO2/m3)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgDBO5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Q : float
@@ -822,14 +830,14 @@ class VdNS2(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Q : float
             Flow rate (m3/day).
 
         Returns
         -------
         list
-            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[4] (mgNO3/L), [TN]out : Cout[5] (mgN/L)).
+            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[6] (mgNO3/L), [TN]out : Cout[7] (mgN/L), [P]out : Cout[8] (mgP/L), [col]out : Cin[9] (log)).
         """
         TSS_out2 = Cin[0] * self.Param_TSS
         if TSS_out2 < 0 :
@@ -866,7 +874,15 @@ class VdNS2(Process):
         if NO3_out2 < 0:
             NO3_out2 = 0
 
-        Cout2 = [TSS_out2,BOD5_out2,TKN_out2,CODsb_out2,CODsi_out2,CODp_out2, NO3_out2]
+        P_out2 = Cin[7]
+        if P_out2 < 0:
+            P_out2 = 0
+
+        col_out2 = Cin[8]
+        if col_out2 < 0:
+            col_out2 = 0
+
+        Cout2 = [TSS_out2, BOD5_out2, TKN_out2, CODsb_out2, CODsi_out2, CODp_out2, NO3_out2, P_out2, col_out2]
         
         return Cout2
       
@@ -879,9 +895,9 @@ class VdNS2(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         
         Returns
         -------
@@ -953,9 +969,9 @@ class VdNSS(Process):
     param_CODsb : float
         Reduction parameter related to CODsb.
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
     V_values : list
         Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
     Q : float
@@ -1041,7 +1057,7 @@ class VdNSS(Process):
         Cin : list
             Input concentrations ([TSS]in : Cin[0] (gTSS/m3), [BOD5]in : Cin[1] (gO2/m3), [TKN]in : Cin[2] (gTKN/m3), [CODdb]in : Cin[3] (gO2/m2), [CODdi]in : Cin[4] (gO2/m3), [CODp]in : Cin[5] (gO2/m3)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (gTSS/m3), [BOD5]obj : Cobj[1] (gO2/m3), [TKN]obj : Cobj[2] (gTKN/m3), [CODt]obj : Cobj[3] (gO2/m2)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgDBO5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         V_values : list
             Process volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Q : float
@@ -1058,14 +1074,14 @@ class VdNSS(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Q : float
             Flow rate (m3/day).
 
         Returns
         -------
         list
-            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[4] (mgNO3/L), [TN]out : Cout[5] (mgN/L)).
+            Output concentrations after reduction ([TSS]out : Cout[0] (mgTSS/L), [BOD5]out : Cout[1] (mgDOD5/L), [TKN]out : Cout[2] (mgTKN/L), [CODdb]out : Cout[3] (mgCODdb/L), [CODdi]out : Cout[4] (mgCODdi/L), [CODp]out : Cout[5] (mgCODp/L), [NO3]out : Cout[6] (mgNO3/L), [TN]out : Cout[7] (mgN/L), [P]out : Cout[8] (mgP/L), [col]out : Cin[9] (log)).
         """
         TSS_out1 = Cin[0] * self.Param_TSS
         if TSS_out1 < 0:
@@ -1103,7 +1119,15 @@ class VdNSS(Process):
         if NO3_out1 < 0:
             NO3_out1 = 0
 
-        Cout1 = [TSS_out1, BOD5_out1, TKN_out1, CODsb_out1, CODsi_out1, CODp_out1, NO3_out1]
+        P_out1 = Cin[7]
+        if P_out1 < 0:
+            P_out1 = 0
+
+        col_out1 = Cin[8]
+        if col_out1 < 0:
+            col_out1 = 0
+        
+        Cout1 = [TSS_out1, BOD5_out1, TKN_out1, CODsb_out1, CODsi_out1, CODp_out1, NO3_out1, P_out1, col_out1]
     
         return Cout1
           
@@ -1116,9 +1140,9 @@ class VdNSS(Process):
         V_values : list
             VdNS1 volume values (Q / surface area : V[0] (m/day) and depth : V[1] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         
         Returns
         -------
@@ -1153,9 +1177,9 @@ class Treatment_Train:
     pathway : list
         List of treatment processes in the train.
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
     Cobj : list
-        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
     Q : float
         Flow rate (m3/day).
     V : list
@@ -1205,9 +1229,9 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         Q : float
             Flow rate (m3/day).
         """
@@ -1337,7 +1361,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1360,7 +1384,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1383,7 +1407,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1409,7 +1433,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1432,7 +1456,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1458,7 +1482,7 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
 
         Returns
         -------
@@ -1530,9 +1554,9 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         Q : float
             Flow rate (m3/day).
 
@@ -1562,9 +1586,9 @@ class Treatment_Train:
         V : list
             Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
         Cin : list
-            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+            Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L), [P]in : Cin[7] (mgP/L), [col]in : Cin[8] (log)).
         Cobj : list
-            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
         Q : float
             Flow rate (m3/day).
 
