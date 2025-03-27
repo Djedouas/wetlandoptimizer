@@ -361,6 +361,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             pathway_result.BOD5_loading_stages.append(round(constraint_BOD_pc, 2))
             pathway_result.TKN_loading_stages.append(round(constraint_TKN_pc, 2))
             pathway_result.COD_loading_stages.append(round(constraint_COD_pc, 2))
+            pathway_result.hydraulic_loading_rate_stages.append(round(constraint_hydraulic_pc, 2))
             
             output = process_instance.Reduction_Function(V_values, output, Q)
 
@@ -564,6 +565,7 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
             pathway_result.BOD5_loading_stages.append(round(constraint_BOD_pc, 2))
             pathway_result.TKN_loading_stages.append(round(constraint_TKN_pc, 2))
             pathway_result.COD_loading_stages.append(round(constraint_COD_pc, 2))
+            pathway_result.hydraulic_loading_rate_stages.append(round(constraint_hydraulic_pc, 2))
             
             output = process_instance.Reduction_Function(V_values, output, Q)
 
