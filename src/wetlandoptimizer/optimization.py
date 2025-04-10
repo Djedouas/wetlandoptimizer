@@ -183,14 +183,18 @@ class Optimizer_Gobal_Generation:
             constraints_TKNout = self.treatment_train.Create_Constraints_TKNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
             constraints_CODout = self.treatment_train.Create_Constraints_CODout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
             constraints_NO3out = self.treatment_train.Create_Constraints_NO3out(solution, self.treatment_train.Cobj, self.treatment_train.Q)
-            constraints_TNout = self.treatment_train.Create_Constraints_TNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)            
+            constraints_TNout = self.treatment_train.Create_Constraints_TNout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
+            constraints_Pout = self.treatment_train.Create_Constraints_Pout(solution, self.treatment_train.Cobj, self.treatment_train.Q)
+            constraints_colout = self.treatment_train.Create_Constraints_colout(solution, self.treatment_train.Cobj, self.treatment_train.Q)            
 
             constraints_met = all(c >= 0 for c in constraints_TSSout) and \
                             all(c >= 0 for c in constraints_BODout) and \
                             all(c >= 0 for c in constraints_TKNout) and \
                             all(c >= 0 for c in constraints_CODout) and \
                             all(c >= 0 for c in constraints_NO3out) and \
-                            all(c >= 0 for c in constraints_TNout)
+                            all(c >= 0 for c in constraints_TNout) and \
+                            all(c >= 0 for c in constraints_Pout) and \
+                            all(c >= 0 for c in constraints_colout)
 
             if constraints_met:
                 best_results.append([pathway_combination, volume, solution])

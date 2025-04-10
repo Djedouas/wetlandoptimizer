@@ -1498,6 +1498,59 @@ class Treatment_Train:
                 output = process.Reduction_Function(V_values, output, Q)
             constraint = Cobj[5] - (output[2]+output[6])
             return [constraint]    
+        
+    def Create_Constraints_Pout(self, V, Cobj, Q) :
+        """
+        Create total treatment train output constraints for NO3, corresponding to the difference between the objective outlet concentration and the actuel outlet concentration.
+
+        Parameters
+        ----------
+        V : list
+            Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
+        Cobj : list
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
+
+        Returns
+        -------
+        constraint : list
+            NO3 output constraint value.
+        """
+        if Cobj[6] == None :
+            return [0]
+        else :
+            output = self.Cin
+            for index, process in enumerate(self.pathway):
+                V_values = V[index * 3: (index + 1) * 3]
+                output = process.Reduction_Function(V_values, output, Q)
+            constraint = Cobj[6] - output[7]
+            return [constraint]
+
+    def Create_Constraints_colout(self, V, Cobj, Q) :
+        """
+        Create total treatment train output constraints for NO3, corresponding to the difference between the objective outlet concentration and the actuel outlet concentration.
+
+        Parameters
+        ----------
+        V : list
+            Total treatment train volume values (Q / surface area of the first stage: V[0] (m/day) and depth of the first stage: V[1] (m), Q / surface area of the second stage: V[2] (m/day) and depth of the second stage: V[3] (m)).
+        Cobj : list
+            Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/L), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L), [P]obj : Cobj[6] (mgP/L), [col]obj : Cobj[7] (log)).
+
+        Returns
+        -------
+        constraint : list
+            NO3 output constraint value.
+        """
+        if Cobj[7] == None :
+            return [0]
+        else :
+            output = self.Cin
+            for index, process in enumerate(self.pathway):
+                V_values = V[index * 3: (index + 1) * 3]
+                output = process.Reduction_Function(V_values, output, Q)
+            constraint = Cobj[7] - output[8]
+            return [constraint]
+
     
     def Total_Volume_Function(self, V, Q) :
         """
@@ -1607,6 +1660,8 @@ class Treatment_Train:
         constraint_CODout = self.Create_Constraints_CODout(V, Cobj, Q)
         constraint_NO3out = self.Create_Constraints_NO3out(V, Cobj, Q)
         constraint_TNout = self.Create_Constraints_TNout(V, Cobj, Q)
+        constraint_Pout = self.Create_Constraints_Pout(V, Cobj, Q)
+        constraint_colout = self.Create_Constraints_colout(V, Cobj, Q)
         constraints = []
         constraints.extend(constraints_TSS)
         constraints.extend(constraints_BOD)
@@ -1618,6 +1673,8 @@ class Treatment_Train:
         constraints.extend(constraint_CODout)
         constraints.extend(constraint_NO3out)
         constraints.extend(constraint_TNout)
+        constraints.extend(constraint_Pout)
+        constraints.extend(constraint_colout)
         objectives = self.Create_Objective_Function(V, Cin, Cobj, Q)
         constraint_penalty = 0
         obj_value = 0
