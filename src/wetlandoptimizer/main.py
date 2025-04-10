@@ -318,3 +318,170 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
         if Cobj[7] != None:    
             print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
+
+################################################################################
+
+def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
+    """
+    Optimizes and ranks the treatment trains generated exploring all the process combinations, ranks them by volume and prints the results for the user.
+
+    Parameters
+    ----------
+    Cin : list
+        Input concentrations ([TSS]in : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L)).
+    Cobj : list
+        Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
+    Q : float
+        Flow rate (m3/day).
+    climate : str
+        Climate type, either "temperate" or "tropical", determining environmental conditions affecting the treatment process.
+    stages_max : float
+        Maximum value for the number of stages in series.
+    files_max : float
+        Maximum value for the number of files in parallel.
+    """
+    base_directory = r'C:\Users\zoe.legeai\Documents\Source\caribsan-model\CARIBSANcopy\src\CARIBSANcopy'
+    sys.path.append(base_directory)
+
+    config_path = os.path.join(base_directory, 'config.yaml')
+    
+    if not os.path.exists(config_path):
+        raise FileNotFoundError(f"No such file or directory: '{config_path}'")
+    
+    with open(config_path, 'r') as file:
+        config = yaml.safe_load(file)
+
+    if climate == "Tropical":
+        config['VdNS1']['Nb_parallel'] = 2
+        config['VdNSS']['Nb_parallel'] = 2
+
+    process_mapping = {}
+    subclasses = treatment.Pathway.Get_Subclasses(treatment.Process)
+    for subclass in subclasses:
+        process_mapping[subclass.__name__] = subclass
+
+    print("Optimizing with CMA-ES...")
+    print("")
+
+    all_results = []
+    for current_stages_max in range(1, stages_max + 1):
+        print(f"Optimizing for stages_max = {current_stages_max}...")
+        treatment_train_MS_TW = treatment.Treatment_Train([], [], Cin, Cobj, Q)
+        optimizer = optimization.Optimizer_Gobal_Generation_All(treatment_train_MS_TW, current_stages_max, files_max)
+        sorted_results = optimizer.Optimize_Best_Pathway()
+
+        for result in sorted_results:
+            pathway_cleaned = [type(obj).__name__ for obj in result[0]]
+            solution = result[2]
+            total_volume = result[1]
+
+            if not any(
+                existing_result['pathway'] == pathway_cleaned and 
+                np.allclose(existing_result['solution'], solution, atol=1e-3)
+                for existing_result in all_results):
+                all_results.append({
+                    'stages_max': current_stages_max,
+                    'pathway': pathway_cleaned,
+                    'solution': solution,
+                    'volume': total_volume
+                })
+
+    all_results = sorted(all_results, key=lambda x: x['volume'])
+    if not all_results:
+        print("No suitable solutions for this combination of Cin / Cobj")
+
+    for position, result in enumerate(all_results):
+        print("")
+        print("################################################################################")
+        print("")
+        print(f"stages_max: {result['stages_max']}, Pathway at position: {(position + 1)}")
+        print("Pathway:", result['pathway'])
+        print("")
+        print("Solution:", [round(value, 2) for value in result['solution']])
+        print("")
+
+        process_instances = [
+            process_mapping[process_name](**config[process_name])
+            for process_name in result['pathway']
+        ]
+
+        treatment_train_MS_TW_opti = treatment.Treatment_Train(
+            process_instances,
+            result['solution'],
+            Cin, Cobj, Q
+        )
+
+        output_function_values = treatment_train_MS_TW_opti.Output_Function(result['solution'], Q)
+        total_volume = treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q)
+
+        print("Sizing:")
+        print("")
+
+        for stage_index, pathway in enumerate(result['pathway']):
+            process_class = process_mapping[pathway]
+            process_instance = process_class(**config[pathway]) 
+
+            surface_area = round(Q / result['solution'][stage_index * 3] * process_instance.Nb_parallel, 2)
+            depth_unsat = round(result['solution'][stage_index * 3 + 1], 2)
+            depth_sat = round(result['solution'][stage_index * 3 + 2], 2)
+
+            ordinal_suffix = get_ordinal_suffix(stage_index + 1)
+
+            print(f"Total surface area {stage_index + 1}{ordinal_suffix} floor :", surface_area, "m²")
+            print(f"Unsaturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_unsat, "m")
+            print(f"Saturated depth {stage_index + 1}{ordinal_suffix} floor :", depth_sat, "m")
+            print("---")
+
+        print("Total volume:", round(treatment_train_MS_TW_opti.Total_Volume_Function(result['solution'], Q), 2), "m³")
+        print("Total surface area:", round(treatment_train_MS_TW_opti.Total_Surface_Area_Function(result['solution'], Q), 2), "m²")
+
+        print("")
+        print("Outlet concentration:")
+        print("")
+        print("TSS:", round(output_function_values[0], 2), "mgTSS/L")
+        print("BOD5:", round(output_function_values[1], 2), "mgO2/L")
+        print("TKN:", round(output_function_values[2], 2), "mgTKN/L")
+        print("COD:", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2), "mgO2/L")
+        print("NO3:", round(output_function_values[6], 2), "mgNO3/L")
+        print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
+        print("P (mgP/L):", round(output_function_values[7], 2))
+        print("Coliformes (log):", round(output_function_values[8], 2))
+
+        print("")
+        print("Checking constraints values for solution found by CMA-ES...")
+        print("")
+        output = Cin
+
+        for index, process_name in enumerate(result['pathway']):
+            process_class = process_mapping[process_name]
+            process_instance = process_class(**config[process_name])
+            V_values = result['solution'][index * 3: (index + 1) * 3]
+
+            constraint_TSS_pc = 100 * output[0] * V_values[0] / process_instance.Lim_TSS
+            print(f"TSS loading contraint stage {index + 1}: {round(constraint_TSS_pc, 2)} %")
+            constraint_BOD_pc = 100 * output[1] * V_values[0] / process_instance.Lim_BOD
+            print(f"BOD loading contraint stage {index + 1}: {round(constraint_BOD_pc, 2)} %")
+            constraint_TKN_pc = 100 * output[2] * V_values[0] / process_instance.Lim_TKN
+            print(f"TKN loading contraint stage {index + 1}: {round(constraint_TKN_pc, 2)} %")
+            constraint_COD_pc = 100 * (output[3] + output[4] + output[5]) * V_values[0] / process_instance.Lim_COD
+            print(f"COD loading contraint stage {index + 1}: {round(constraint_COD_pc, 2)} %")
+            print("")
+            constraint_hydraulic_pc = 100 * (V_values[0] - process_instance.Xmin) / (process_instance.Xmax - process_instance.Xmin)
+            print(f"Hydraulic loading constraint stage {index + 1}: {round(constraint_hydraulic_pc, 2)} %")
+            print("---")
+            
+            output = process_instance.Reduction_Function(V_values, output, Q)
+
+        print("Outlet TSS deviation:", round(-(Cobj[0] - output_function_values[0]), 2), "mgTSS/L")
+        print("Outlet BOD5 deviation:", round(-(Cobj[1] - output_function_values[1]), 2), "mgO2/L")
+        if Cobj[2] != None:        
+            print("Outlet TKN deviation:", round(-(Cobj[2] - output_function_values[2]), 2), "mgTKN/L")
+        print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
+        if Cobj[4] != None:
+            print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
+        if Cobj[5] != None:
+            print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
+        if Cobj[6] != None:    
+            print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+        if Cobj[7] != None:    
+            print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
