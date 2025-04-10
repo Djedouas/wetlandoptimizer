@@ -21,7 +21,7 @@ def COD_Fractionation(pollutants_in):
     """  
     if pollutants_in[0] > 0.75 * pollutants_in[3] :
         print("erreur")
-        fractionated_pollutants_in = [0,0,0,0,0]
+        fractionated_pollutants_in = [0,0,0,0,0,0,0]
     else :  
         P = 1.1 * pollutants_in[0]
         if 0.04 * pollutants_in[3] >= 30 :
@@ -29,7 +29,7 @@ def COD_Fractionation(pollutants_in):
         else :
             Si = 0.04 * pollutants_in[3]
         Sb = pollutants_in[3] - P - Si
-        fractionated_pollutants_in = [pollutants_in[0],pollutants_in[1],pollutants_in[2],Sb,Si,P,pollutants_in[4]]
+        fractionated_pollutants_in = [pollutants_in[0],pollutants_in[1],pollutants_in[2],Sb,Si,P,pollutants_in[4],pollutants_in[5],pollutants_in[6]]
     return fractionated_pollutants_in
 
 ################################################################################
@@ -41,7 +41,7 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
     Parameters
     ----------
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L)).
     Cobj : list
         Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
     Q : float
@@ -100,6 +100,8 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
     print("COD (mgO2/L):", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2))
     print("NO3 (mgNO3/L):", round(output_function_values[6], 2))
     print("TN (mgNO3/L):", round(output_function_values[2]+output_function_values[6], 2))
+    print("P (mgP/L):", round(output_function_values[7], 2))
+    print("Coliformes (log):", round(output_function_values[8], 2))
 
     print("")
     print("Checking constraints values for best solution found by CMA-ES...")
@@ -130,6 +132,10 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
         print("Outlet NO3 deviation:",round(-(Cobj[4] - output_function_values[6]),2),"mgNO3/L")
     if Cobj[5] != None:    
         print("Outlet TN deviation:",round(-(Cobj[5] - (output_function_values[2]+output_function_values[6])),2),"mgO2/L")
+    if Cobj[6] != None:    
+        print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+    if Cobj[7] != None:    
+        print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")        
       
 ################################################################################
 
@@ -155,7 +161,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
     Parameters
     ----------
     Cin : list
-        Input concentrations ([TSS]in1 : Cin[0] (mgTSS/L), [BOD5]in1 : Cin[1] (mgBOD5/L), [TKN]in1 : Cin[2] (mgTKN/L), [CODdb]in1 : Cin[3] (mgCODdb/L), [CODdi]in1 : Cin[4] (mgCODdi/m3), [CODp]in1 : Cin[5] (mgCODp/L), [NO3]in1 : Cin[6] (mgNO3/L)).
+        Input concentrations ([TSS]in : Cin[0] (mgTSS/L), [BOD5]in : Cin[1] (mgBOD5/L), [TKN]in : Cin[2] (mgTKN/L), [CODdb]in : Cin[3] (mgCODdb/L), [CODdi]in : Cin[4] (mgCODdi/m3), [CODp]in : Cin[5] (mgCODp/L), [NO3]in : Cin[6] (mgNO3/L)).
     Cobj : list
         Objective concentrations ([TSS]obj : Cobj[0] (mgTSS/L), [BOD5]obj : Cobj[1] (mgBOD5/L), [TKN]obj : Cobj[2] (mgTKN/L), [CODt]obj : Cobj[3] (mgCODt/m3), [NO3]obj : Cobj[4] (mgNO3/L), [TN]obj : Cobj[5] (mgN/L)).
     Q : float
@@ -271,6 +277,8 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         print("COD:", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2), "mgO2/L")
         print("NO3:", round(output_function_values[6], 2), "mgNO3/L")
         print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
+        print("P (mgP/L):", round(output_function_values[7], 2))
+        print("Coliformes (log):", round(output_function_values[8], 2))
 
         print("")
         print("Checking constraints values for solution found by CMA-ES...")
@@ -306,3 +314,7 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
             print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
         if Cobj[5] != None:
             print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
+        if Cobj[6] != None:    
+            print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+        if Cobj[7] != None:    
+            print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
