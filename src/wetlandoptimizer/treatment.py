@@ -1622,8 +1622,7 @@ class Treatment_Train:
         output = self.Cin
         for index, process in enumerate(self.pathway):
             V_values = V[index * 3: (index + 1) * 3]
-            vol = process.Volume_Function_Unsat(V_values,Q) * process.Mat_cost + process.Volume_Function_Sat(V_values,Q) * 0.66
-            #demander pq 0.66 !!
+            vol = process.Volume_Function_Unsat(V_values,Q) * process.Mat_cost + process.Volume_Function_Sat(V_values,Q) * 0.66 #remettre gravier = 1
             objective.append(vol)
             supp = process.Supplementary_Objective_Function(V_values, output, Cobj)
             objective.append(supp)
