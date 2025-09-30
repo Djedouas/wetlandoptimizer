@@ -26,18 +26,18 @@ class PathwayResult:
     BOD5_concentration: Optional[float] = None
     TKN_concentration: Optional[float] = None
     COD_concentration: Optional[float] = None
-    NO3_concentration: Optional[float] = None
+    NO3N_concentration: Optional[float] = None
     TN_concentration: Optional[float] = None
-    P_concentration: Optional[float] = None
-    col_concentration: Optional[float] = None
+    TP_concentration: Optional[float] = None
+    ecoli_concentration: Optional[float] = None
     TSS_deviation: Optional[float] = None
     BOD5_deviation: Optional[float] = None
     TKN_deviation: Optional[float] = None
     COD_deviation: Optional[float] = None
-    NO3_deviation: Optional[float] = None
+    NO3N_deviation: Optional[float] = None
     TN_deviation: Optional[float] = None
-    P_deviation: Optional[float] = None
-    col_deviation: Optional[float] = None
+    TP_deviation: Optional[float] = None
+    ecoli_deviation: Optional[float] = None
 
 
 def COD_Fractionation(pollutants_in):
@@ -133,9 +133,9 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
     print("BOD5 (mgO2/L):", round(output_function_values[1], 2))
     print("TKN (mgTKN/L):", round(output_function_values[2], 2))
     print("COD (mgO2/L):", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2))
-    print("NO3 (mgNO3/L):", round(output_function_values[6], 2))
+    print("NO3N (mgNO3/L):", round(output_function_values[6], 2))
     print("TN (mgNO3/L):", round(output_function_values[2]+output_function_values[6], 2))
-    print("P (mgP/L):", round(output_function_values[7], 2))
+    print("TP (mgTP/L):", round(output_function_values[7], 2))
     print("Coliformes (log):", round(output_function_values[8], 2))
 
     print("")
@@ -164,11 +164,11 @@ def Results_French_VF(Cin, Cobj, Q, climate) :
         print("Outlet TKN deviation:",round(-(Cobj[2] - output_function_values[2]),2),"mgTKN/L")
     print("Outlet COD deviation:",round(-(Cobj[3] - (output_function_values[3]+output_function_values[4]+output_function_values[5])),2),"mgO2/L")
     if Cobj[4] is not None :
-        print("Outlet NO3 deviation:",round(-(Cobj[4] - output_function_values[6]),2),"mgNO3/L")
+        print("Outlet NO3N deviation:",round(-(Cobj[4] - output_function_values[6]),2),"mgNO3/L")
     if Cobj[5] is not None:    
         print("Outlet TN deviation:",round(-(Cobj[5] - (output_function_values[2]+output_function_values[6])),2),"mgO2/L")
     if Cobj[6] != None:    
-        print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
+        print("Outlet TP deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgTP/L")
     if Cobj[7] != None:    
         print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")        
       
@@ -320,19 +320,19 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         print("BOD5:", round(output_function_values[1], 2), "mgO2/L")
         print("TKN:", round(output_function_values[2], 2), "mgTKN/L")
         print("COD:", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2), "mgO2/L")
-        print("NO3:", round(output_function_values[6], 2), "mgNO3/L")
+        print("NO3N:", round(output_function_values[6], 2), "mgNO3/L")
         print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
-        print("P (mgP/L):", round(output_function_values[7], 2))
+        print("TP (mgTP/L):", round(output_function_values[7], 2))
         print("Coliformes (log):", round(output_function_values[8], 2))
 
         pathway_result.TSS_concentration = round(output_function_values[0], 2)
         pathway_result.BOD5_concentration = round(output_function_values[1], 2)
         pathway_result.TKN_concentration = round(output_function_values[2], 2)
         pathway_result.COD_concentration = round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2)
-        pathway_result.NO3_concentration = round(output_function_values[6], 2)
+        pathway_result.NO3N_concentration = round(output_function_values[6], 2)
         pathway_result.TN_concentration = round(output_function_values[2]+output_function_values[6], 2)
-        pathway_result.P_concentration = round(output_function_values[7], 2)
-        pathway_result.col_concentration = round(output_function_values[8], 2)
+        pathway_result.TP_concentration = round(output_function_values[7], 2)
+        pathway_result.ecoli_concentration = round(output_function_values[8], 2)
 
         print("")
         print("Checking constraints values for solution found by CMA-ES...")
@@ -375,17 +375,17 @@ def Results_Global_Generation(Cin, Cobj, Q, stages_max, files_max, climate):
         print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
         pathway_result.COD_deviation = round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2)
         if Cobj[4] is not None:
-            print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
-            pathway_result.NO3_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
+            print("Outlet NO3N deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3N/L")
+            pathway_result.NO3N_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
         if Cobj[5] is not None:
             print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
             pathway_result.TN_deviation = round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2)
         if Cobj[6] != None:    
-            print("Outlet P deviation:", round(-(Cobj[6] - (output_function_values[7])), 2),"mgP/L")
-            pathway_result.P_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
+            print("Outlet TP deviation:", round(-(Cobj[6] - (output_function_values[7])), 2),"mgTP/L")
+            pathway_result.TP_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
         if Cobj[7] != None:    
             print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
-            pathway_result.col_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
+            pathway_result.ecoli_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
             
         pathway_results.append(pathway_result)
 
@@ -524,19 +524,19 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
         print("BOD5:", round(output_function_values[1], 2), "mgO2/L")
         print("TKN:", round(output_function_values[2], 2), "mgTKN/L")
         print("COD:", round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2), "mgO2/L")
-        print("NO3:", round(output_function_values[6], 2), "mgNO3/L")
+        print("NO3N:", round(output_function_values[6], 2), "mgNO3N/L")
         print("TN:", round(output_function_values[2]+output_function_values[6], 2), "mgN/L")
-        print("P (mgP/L):", round(output_function_values[7], 2))
+        print("TP (mgTP/L):", round(output_function_values[7], 2))
         print("Coliformes (log):", round(output_function_values[8], 2))
 
         pathway_result.TSS_concentration = round(output_function_values[0], 2)
         pathway_result.BOD5_concentration = round(output_function_values[1], 2)
         pathway_result.TKN_concentration = round(output_function_values[2], 2)
         pathway_result.COD_concentration = round(output_function_values[3] + output_function_values[4] + output_function_values[5], 2)
-        pathway_result.NO3_concentration = round(output_function_values[6], 2)
+        pathway_result.NO3N_concentration = round(output_function_values[6], 2)
         pathway_result.TN_concentration = round(output_function_values[2]+output_function_values[6], 2)
-        pathway_result.P_concentration = round(output_function_values[7], 2)
-        pathway_result.col_concentration = round(output_function_values[8], 2)
+        pathway_result.TP_concentration = round(output_function_values[7], 2)
+        pathway_result.ecoli_concentration = round(output_function_values[8], 2)
 
         print("")
         print("Checking constraints values for solution found by CMA-ES...")
@@ -579,17 +579,17 @@ def Results_Global_Generation_All(Cin, Cobj, Q, stages_max, files_max, climate):
         print("Outlet COD deviation:", round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2), "mgO2/L")
         pathway_result.COD_deviation = round(-(Cobj[3] - (output_function_values[3] + output_function_values[4] + output_function_values[5])), 2)
         if Cobj[4] != None:
-            print("Outlet NO3 deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3/L")
-            pathway_result.NO3_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
+            print("Outlet NO3N deviation:", round(-(Cobj[4] - output_function_values[6]), 2), "mgNO3N/L")
+            pathway_result.NO3N_deviation = round(-(Cobj[4] - output_function_values[6]), 2)
         if Cobj[5] != None:
             print("Outlet TN deviation:", round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2), "mgN/L")
             pathway_result.TN_deviation = round(-(Cobj[5] - (output_function_values[2] + output_function_values[6])), 2)
         if Cobj[6] != None:    
-            print("Outlet P deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgP/L")
-            pathway_result.P_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
+            print("Outlet TP deviation:",round(-(Cobj[6] - (output_function_values[7])),2),"mgTP/L")
+            pathway_result.TP_deviation = round(-(Cobj[6] - (output_function_values[7])), 2)
         if Cobj[7] != None:    
             print("Outlet coliformes deviation:",round(-(Cobj[7] - (output_function_values[8])),2),"log")
-            pathway_result.col_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
+            pathway_result.ecoli_deviation = round(-(Cobj[7] - (output_function_values[8])), 2)
 
         pathway_results.append(pathway_result)
 
